@@ -19,6 +19,15 @@ namespace SchedulerDBManager.DataAccess.Database.Access
             connectionString = $"Provider=Microsoft.ACE.OLEDB.12.0;Data Source={databasePath};";
         }
 
+        public void CheckConnection()
+        {
+           using (var conn = GetConnection())
+           {
+              conn.Open();
+              conn.Close();
+           }
+        }
+
         public DataTable ExecuteSelect(string query, params OleDbParameter[] parameters)
         {
             ValidateQuery(query);
