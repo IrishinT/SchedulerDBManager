@@ -28,33 +28,54 @@
         /// </summary>
         private void InitializeComponent()
         {
-            dgvSchedule = new DataGridView();
-            ((System.ComponentModel.ISupportInitialize)dgvSchedule).BeginInit();
+            filePathField = new TextBox();
+            explorerOpenBtn = new Button();
+            connectBtn = new Button();
             SuspendLayout();
             // 
-            // dgvSchedule
+            // filePathField
             // 
-            dgvSchedule.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvSchedule.Location = new Point(66, 82);
-            dgvSchedule.Name = "dgvSchedule";
-            dgvSchedule.RowHeadersWidth = 51;
-            dgvSchedule.Size = new Size(678, 304);
-            dgvSchedule.TabIndex = 0;
+            filePathField.Location = new Point(152, 93);
+            filePathField.Name = "filePathField";
+            filePathField.Size = new Size(370, 27);
+            filePathField.TabIndex = 0;
+            // 
+            // explorerOpenBtn
+            // 
+            explorerOpenBtn.Location = new Point(528, 93);
+            explorerOpenBtn.Name = "explorerOpenBtn";
+            explorerOpenBtn.Size = new Size(94, 29);
+            explorerOpenBtn.TabIndex = 1;
+            explorerOpenBtn.Text = "...";
+            explorerOpenBtn.UseVisualStyleBackColor = true;
+            // 
+            // connectBtn
+            // 
+            connectBtn.Location = new Point(275, 146);
+            connectBtn.Name = "connectBtn";
+            connectBtn.Size = new Size(226, 29);
+            connectBtn.TabIndex = 2;
+            connectBtn.Text = "Подключение";
+            connectBtn.UseVisualStyleBackColor = true;
             // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
-            Controls.Add(dgvSchedule);
+            Controls.Add(connectBtn);
+            Controls.Add(explorerOpenBtn);
+            Controls.Add(filePathField);
             Name = "MainForm";
             Text = "Form1";
-            ((System.ComponentModel.ISupportInitialize)dgvSchedule).EndInit();
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
 
-        private DataGridView dgvSchedule;
+        private TextBox filePathField;
+        private Button explorerOpenBtn;
+        private Button connectBtn;
     }
 }
