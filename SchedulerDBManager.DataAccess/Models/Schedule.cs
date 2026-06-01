@@ -11,7 +11,7 @@ namespace SchedulerDBManager.DataAccess.Models
         public int ShiftId { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
-        public double Duration { get; set; }
+        public int Duration { get; set; }
         public int WorkerCount { get; set; }
         public string SupervisorFullname { get; set; }
         public int SectionId { get; set; }

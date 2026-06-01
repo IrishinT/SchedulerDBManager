@@ -28,15 +28,15 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             dvgSchedules = new DataGridView();
             splitContainer = new SplitContainer();
             tableLayoutPanel = new TableLayoutPanel();
-            durationLbl = new Label();
-            startTimeLbl = new Label();
-            durationField = new TextBox();
-            startTimeDate = new DateTimePicker();
-            endTimeLbl = new Label();
-            endTimeDate = new DateTimePicker();
+            contextMenuStrip1 = new ContextMenuStrip(components);
+            btnAdd = new Button();
+            btnEdit = new Button();
+            btnDelete = new Button();
+            btnHelp = new Button();
             ((System.ComponentModel.ISupportInitialize)dvgSchedules).BeginInit();
             ((System.ComponentModel.ISupportInitialize)splitContainer).BeginInit();
             splitContainer.Panel1.SuspendLayout();
@@ -53,7 +53,7 @@
             dvgSchedules.Location = new Point(0, 0);
             dvgSchedules.Name = "dvgSchedules";
             dvgSchedules.RowHeadersWidth = 51;
-            dvgSchedules.Size = new Size(446, 450);
+            dvgSchedules.Size = new Size(546, 450);
             dvgSchedules.TabIndex = 0;
             // 
             // splitContainer
@@ -71,104 +71,91 @@
             // 
             splitContainer.Panel2.Controls.Add(dvgSchedules);
             splitContainer.Size = new Size(800, 450);
-            splitContainer.SplitterDistance = 350;
+            splitContainer.SplitterDistance = 250;
             splitContainer.TabIndex = 1;
             // 
             // tableLayoutPanel
             // 
-            tableLayoutPanel.ColumnCount = 2;
-            tableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 42.8571434F));
-            tableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 57.1428566F));
-            tableLayoutPanel.Controls.Add(endTimeDate, 1, 2);
-            tableLayoutPanel.Controls.Add(endTimeLbl, 0, 2);
-            tableLayoutPanel.Controls.Add(startTimeLbl, 0, 1);
-            tableLayoutPanel.Controls.Add(durationLbl, 0, 0);
-            tableLayoutPanel.Controls.Add(durationField, 1, 0);
-            tableLayoutPanel.Controls.Add(startTimeDate, 1, 1);
+            tableLayoutPanel.ColumnCount = 1;
+            tableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            tableLayoutPanel.Controls.Add(btnHelp, 0, 3);
+            tableLayoutPanel.Controls.Add(btnDelete, 0, 2);
+            tableLayoutPanel.Controls.Add(btnEdit, 0, 1);
+            tableLayoutPanel.Controls.Add(btnAdd, 0, 0);
             tableLayoutPanel.Dock = DockStyle.Fill;
             tableLayoutPanel.Location = new Point(0, 0);
             tableLayoutPanel.Name = "tableLayoutPanel";
-            tableLayoutPanel.RowCount = 9;
-            tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
-            tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
-            tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
-            tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
-            tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
-            tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
-            tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
-            tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 15F));
-            tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 15F));
-            tableLayoutPanel.Size = new Size(350, 450);
+            tableLayoutPanel.RowCount = 4;
+            tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
+            tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
+            tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
+            tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
+            tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
+            tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
+            tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
+            tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
+            tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
+            tableLayoutPanel.Size = new Size(250, 450);
             tableLayoutPanel.TabIndex = 0;
             tableLayoutPanel.Paint += tableLayoutPanel_Paint;
             // 
-            // durationLbl
+            // contextMenuStrip1
             // 
-            durationLbl.AutoSize = true;
-            durationLbl.Dock = DockStyle.Bottom;
-            durationLbl.Location = new Point(3, 25);
-            durationLbl.Name = "durationLbl";
-            durationLbl.Size = new Size(144, 20);
-            durationLbl.TabIndex = 0;
-            durationLbl.Text = "Длительность";
+            contextMenuStrip1.ImageScalingSize = new Size(20, 20);
+            contextMenuStrip1.Name = "contextMenuStrip1";
+            contextMenuStrip1.Size = new Size(61, 4);
             // 
-            // startTimeLbl
+            // btnAdd
             // 
-            startTimeLbl.AutoSize = true;
-            startTimeLbl.Dock = DockStyle.Bottom;
-            startTimeLbl.Location = new Point(3, 70);
-            startTimeLbl.Name = "startTimeLbl";
-            startTimeLbl.Size = new Size(144, 20);
-            startTimeLbl.TabIndex = 2;
-            startTimeLbl.Text = "Начало";
+            btnAdd.Dock = DockStyle.Bottom;
+            btnAdd.Location = new Point(30, 53);
+            btnAdd.Margin = new Padding(30);
+            btnAdd.Name = "btnAdd";
+            btnAdd.Size = new Size(190, 29);
+            btnAdd.TabIndex = 0;
+            btnAdd.Text = "Создать смену";
+            btnAdd.UseVisualStyleBackColor = true;
             // 
-            // durationField
+            // btnEdit
             // 
-            durationField.Dock = DockStyle.Bottom;
-            durationField.Location = new Point(153, 15);
-            durationField.Name = "durationField";
-            durationField.PlaceholderText = "12 часов";
-            durationField.Size = new Size(194, 27);
-            durationField.TabIndex = 3;
+            btnEdit.Dock = DockStyle.Bottom;
+            btnEdit.Location = new Point(30, 165);
+            btnEdit.Margin = new Padding(30);
+            btnEdit.Name = "btnEdit";
+            btnEdit.Size = new Size(190, 29);
+            btnEdit.TabIndex = 1;
+            btnEdit.Text = "Редактировать смену";
+            btnEdit.UseVisualStyleBackColor = true;
             // 
-            // startTimeDate
+            // btnDelete
             // 
-            startTimeDate.Dock = DockStyle.Bottom;
-            startTimeDate.Location = new Point(153, 60);
-            startTimeDate.MaxDate = new DateTime(2070, 12, 31, 0, 0, 0, 0);
-            startTimeDate.MinDate = new DateTime(2000, 1, 1, 0, 0, 0, 0);
-            startTimeDate.Name = "startTimeDate";
-            startTimeDate.Size = new Size(194, 27);
-            startTimeDate.TabIndex = 4;
+            btnDelete.Dock = DockStyle.Bottom;
+            btnDelete.Location = new Point(30, 277);
+            btnDelete.Margin = new Padding(30);
+            btnDelete.Name = "btnDelete";
+            btnDelete.Size = new Size(190, 29);
+            btnDelete.TabIndex = 2;
+            btnDelete.Text = "Удалить смену";
+            btnDelete.UseVisualStyleBackColor = true;
             // 
-            // endTimeLbl
+            // btnHelp
             // 
-            endTimeLbl.AutoSize = true;
-            endTimeLbl.Dock = DockStyle.Bottom;
-            endTimeLbl.Location = new Point(3, 115);
-            endTimeLbl.Name = "endTimeLbl";
-            endTimeLbl.Size = new Size(144, 20);
-            endTimeLbl.TabIndex = 5;
-            endTimeLbl.Text = "Конец";
+            btnHelp.Dock = DockStyle.Bottom;
+            btnHelp.Location = new Point(30, 391);
+            btnHelp.Margin = new Padding(30);
+            btnHelp.Name = "btnHelp";
+            btnHelp.Size = new Size(190, 29);
+            btnHelp.TabIndex = 3;
+            btnHelp.Text = "Справка";
+            btnHelp.UseVisualStyleBackColor = true;
             // 
-            // endTimeDate
-            // 
-            endTimeDate.Dock = DockStyle.Bottom;
-            endTimeDate.Location = new Point(153, 105);
-            endTimeDate.MaxDate = new DateTime(2070, 12, 31, 0, 0, 0, 0);
-            endTimeDate.MinDate = new DateTime(2000, 1, 1, 0, 0, 0, 0);
-            endTimeDate.Name = "endTimeDate";
-            endTimeDate.Size = new Size(194, 27);
-            endTimeDate.TabIndex = 6;
-            endTimeDate.Value = new DateTime(2026, 5, 28, 15, 0, 0, 0);
-            // 
-            // Schedule
+            // ScheduleForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
             Controls.Add(splitContainer);
-            Name = "Schedule";
+            Name = "ScheduleForm";
             Text = "Schedule";
             ((System.ComponentModel.ISupportInitialize)dvgSchedules).EndInit();
             splitContainer.Panel1.ResumeLayout(false);
@@ -176,7 +163,6 @@
             ((System.ComponentModel.ISupportInitialize)splitContainer).EndInit();
             splitContainer.ResumeLayout(false);
             tableLayoutPanel.ResumeLayout(false);
-            tableLayoutPanel.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -185,11 +171,10 @@
         private DataGridView dvgSchedules;
         private SplitContainer splitContainer;
         private TableLayoutPanel tableLayoutPanel;
-        private Label durationLbl;
-        private Label startTimeLbl;
-        private Label endTimeLbl;
-        private TextBox durationField;
-        private DateTimePicker startTimeDate;
-        private DateTimePicker endTimeDate;
+        private ContextMenuStrip contextMenuStrip1;
+        private Button btnDelete;
+        private Button btnEdit;
+        private Button btnAdd;
+        private Button btnHelp;
     }
 }

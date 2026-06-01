@@ -69,8 +69,11 @@ namespace SchedulerDBManager.Presentaton
                 IScheduleRepository repository = new AccessScheduleRepository(database);
                 ScheduleService scheduleService = new ScheduleService(repository);
 
+                ISectionRepository sectionRepository = new AccessSectionRepository(database);
+                SectionService sectionService = new SectionService(sectionRepository);
+
                 // Открываем форму Schedule и передаем сервис
-                ScheduleForm scheduleForm = new ScheduleForm(scheduleService);
+                ScheduleForm scheduleForm = new ScheduleForm(scheduleService, sectionService);
                 scheduleForm.Show();
                 
                 // Скрываем главную форму или оставляем открытой

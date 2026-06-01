@@ -32,39 +32,53 @@ namespace SchedulerDBManager.DataAccess.Database.Access
         {
             ValidateQuery(query);
 
-            using (var conn = GetConnection())
-            using (var cmd = GetCommand(query, conn, parameters))
+            DataTable dt = new DataTable();
+
+            using (var connection = new OleDbConnection(connectionString))
+            using (var command = new OleDbCommand(query, connection))
             {
-                if (parameters != null) cmd.Parameters.AddRange(parameters);
-                var dt = new DataTable();
-                new OleDbDataAdapter(cmd).Fill(dt);
-                return dt;
+                if (parameters != null && parameters.Length > 0)
+                {
+                    foreach (var p in parameters)
+                    {
+                        command.Parameters.Add(p);
+                    }
+                }
+
+                using (var adapter = new OleDbDataAdapter(command))
+                {
+                    adapter.Fill(dt);
+                }
+
+                command.Parameters.Clear();
             }
+            return dt;
         }
 
         public void ExecuteNonQuery(string query, params OleDbParameter[] parameters)
         {
             ValidateQuery(query);
 
-            using (var conn = GetConnection())
-            using (var cmd = GetCommand(query, conn, parameters))
+            using (var connection = new OleDbConnection(connectionString))
+            using (var command = new OleDbCommand(query, connection))
             {
-                if (parameters != null) cmd.Parameters.AddRange(parameters);
-                conn.Open();
-                cmd.ExecuteNonQuery();
+                if (parameters != null && parameters.Length > 0)
+                {
+                    foreach (var p in parameters)
+                    {
+                        command.Parameters.Add(p);
+                    }
+                }
+
+                connection.Open();
+                command.ExecuteNonQuery();
+                command.Parameters.Clear();
             }
         }
 
         private OleDbConnection GetConnection()
         {
             return new OleDbConnection(connectionString);
-        }
-
-        private OleDbCommand GetCommand(string query, OleDbConnection connection, params OleDbParameter[] parameters)
-        {
-            var cmd = new OleDbCommand(query, connection);
-            if (parameters != null) cmd.Parameters.AddRange(parameters);
-            return cmd;
         }
 
         private void ValidateQuery(string query)
