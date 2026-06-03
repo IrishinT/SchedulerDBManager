@@ -18,7 +18,9 @@ namespace SchedulerDBManager.DataAccess.Repositories.Access
 
         public IEnumerable<Section> GetAll()
         {
-            string sql = "SELECT * FROM sections";
+            string sql = @"SELECT sec.*, dep.department_name 
+                   FROM sections sec 
+                   INNER JOIN department dep ON sec.department_id = dep.department_id";
             var dataTable = db.ExecuteSelect(sql);
             return MapToDomain(dataTable);
         }
@@ -36,7 +38,7 @@ namespace SchedulerDBManager.DataAccess.Repositories.Access
 
             db.ExecuteNonQuery(sql,
                 new OleDbParameter("@p1", OleDbType.LongVarWChar) { Value = s.Address ?? (object)DBNull.Value },
-                new OleDbParameter("@p2", OleDbType.Integer) { Value = Convert.ToInt32(s.DepartmentId) },
+                new OleDbParameter("@p2", OleDbType.Integer) { Value = s.DepartmentId },
                 new OleDbParameter("@p3", OleDbType.VarWChar) { Value = s.Phone ?? (object)DBNull.Value }
             );
         }
@@ -47,7 +49,7 @@ namespace SchedulerDBManager.DataAccess.Repositories.Access
 
             db.ExecuteNonQuery(sql,
                 new OleDbParameter("@p1", OleDbType.LongVarWChar) { Value = s.Address ?? (object)DBNull.Value },
-                new OleDbParameter("@p2", OleDbType.Integer) { Value = Convert.ToInt32(s.DepartmentId) },
+                new OleDbParameter("@p2", OleDbType.Integer) { Value = s.DepartmentId },
                 new OleDbParameter("@p3", OleDbType.VarWChar) { Value = s.Phone ?? (object)DBNull.Value },
                 new OleDbParameter("@p4", OleDbType.Integer) { Value = s.SectionId }
             );
@@ -65,14 +67,15 @@ namespace SchedulerDBManager.DataAccess.Repositories.Access
             var list = new List<Section>();
             foreach (DataRow row in dt.Rows)
             {
-                // Очищаем адрес от случайных кавычек из БД (например " Москва, ул...")
+                // Очищаем адрес от случайных кавычек из БД
                 string rawAddress = row["address"].ToString().Replace("\"", "").Trim();
 
                 list.Add(new Section
                 {
                     SectionId = Convert.ToInt32(row["section_id"]),
                     Address = rawAddress,
-                    DepartmentId = row["department_id"].ToString(),
+                    DepartmentId = Convert.ToInt32(row["department_id"]),
+                    DepartmentName = row["department_name"].ToString(),
                     Phone = row["phone"].ToString()
                 });
             }

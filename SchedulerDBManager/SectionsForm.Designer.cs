@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            dvgSchedules = new DataGridView();
+            dgvSections = new DataGridView();
             splitContainer = new SplitContainer();
             tableLayoutPanel = new TableLayoutPanel();
             btnHelp = new Button();
@@ -37,7 +37,7 @@
             btnEdit = new Button();
             btnAdd = new Button();
             contextMenuStrip1 = new ContextMenuStrip(components);
-            ((System.ComponentModel.ISupportInitialize)dvgSchedules).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)dgvSections).BeginInit();
             ((System.ComponentModel.ISupportInitialize)splitContainer).BeginInit();
             splitContainer.Panel1.SuspendLayout();
             splitContainer.Panel2.SuspendLayout();
@@ -45,16 +45,16 @@
             tableLayoutPanel.SuspendLayout();
             SuspendLayout();
             // 
-            // dvgSchedules
+            // dgvSections
             // 
-            dvgSchedules.BackgroundColor = SystemColors.Control;
-            dvgSchedules.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dvgSchedules.Dock = DockStyle.Fill;
-            dvgSchedules.Location = new Point(0, 0);
-            dvgSchedules.Name = "dvgSchedules";
-            dvgSchedules.RowHeadersWidth = 51;
-            dvgSchedules.Size = new Size(546, 450);
-            dvgSchedules.TabIndex = 0;
+            dgvSections.BackgroundColor = SystemColors.Control;
+            dgvSections.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvSections.Dock = DockStyle.Fill;
+            dgvSections.Location = new Point(0, 0);
+            dgvSections.Name = "dgvSections";
+            dgvSections.RowHeadersWidth = 51;
+            dgvSections.Size = new Size(546, 450);
+            dgvSections.TabIndex = 0;
             // 
             // splitContainer
             // 
@@ -68,7 +68,7 @@
             // 
             // splitContainer.Panel2
             // 
-            splitContainer.Panel2.Controls.Add(dvgSchedules);
+            splitContainer.Panel2.Controls.Add(dgvSections);
             splitContainer.Size = new Size(800, 450);
             splitContainer.SplitterDistance = 250;
             splitContainer.TabIndex = 1;
@@ -155,7 +155,7 @@
             Controls.Add(splitContainer);
             Name = "SectionsForm";
             Text = "Schedule";
-            ((System.ComponentModel.ISupportInitialize)dvgSchedules).EndInit();
+            ((System.ComponentModel.ISupportInitialize)dgvSections).EndInit();
             splitContainer.Panel1.ResumeLayout(false);
             splitContainer.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)splitContainer).EndInit();
@@ -166,7 +166,7 @@
 
         #endregion
 
-        private DataGridView dvgSchedules;
+        private DataGridView dgvSections;
         private SplitContainer splitContainer;
         private TableLayoutPanel tableLayoutPanel;
         private ContextMenuStrip contextMenuStrip1;
