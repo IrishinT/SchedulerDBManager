@@ -29,10 +29,10 @@
         private void InitializeComponent()
         {
             tableLayout = new TableLayoutPanel();
-            phoneField = new TextBox();
-            addressLbl = new Label();
-            phoneLbl = new Label();
-            addressField = new TextBox();
+            headField = new TextBox();
+            nameLbl = new Label();
+            headLbl = new Label();
+            nameField = new TextBox();
             btnSave = new Button();
             btnCancel = new Button();
             tableLayout.SuspendLayout();
@@ -43,12 +43,12 @@
             tableLayout.ColumnCount = 2;
             tableLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
             tableLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
-            tableLayout.Controls.Add(phoneField, 1, 1);
-            tableLayout.Controls.Add(addressLbl, 0, 0);
-            tableLayout.Controls.Add(phoneLbl, 0, 1);
+            tableLayout.Controls.Add(headField, 1, 1);
+            tableLayout.Controls.Add(nameLbl, 0, 0);
+            tableLayout.Controls.Add(headLbl, 0, 1);
             tableLayout.Controls.Add(btnCancel, 0, 2);
             tableLayout.Controls.Add(btnSave, 1, 2);
-            tableLayout.Controls.Add(addressField, 1, 0);
+            tableLayout.Controls.Add(nameField, 1, 0);
             tableLayout.Dock = DockStyle.Fill;
             tableLayout.Location = new Point(0, 0);
             tableLayout.Name = "tableLayout";
@@ -62,39 +62,39 @@
             // 
             // phoneField
             // 
-            phoneField.Dock = DockStyle.Bottom;
-            phoneField.Location = new Point(403, 269);
-            phoneField.Name = "phoneField";
-            phoneField.Size = new Size(394, 27);
-            phoneField.TabIndex = 13;
+            headField.Dock = DockStyle.Bottom;
+            headField.Location = new Point(403, 269);
+            headField.Name = "phoneField";
+            headField.Size = new Size(394, 27);
+            headField.TabIndex = 13;
             // 
             // addressLbl
             // 
-            addressLbl.AutoSize = true;
-            addressLbl.Dock = DockStyle.Bottom;
-            addressLbl.Location = new Point(3, 129);
-            addressLbl.Name = "addressLbl";
-            addressLbl.Size = new Size(394, 20);
-            addressLbl.TabIndex = 0;
-            addressLbl.Text = "Название:";
+            nameLbl.AutoSize = true;
+            nameLbl.Dock = DockStyle.Bottom;
+            nameLbl.Location = new Point(3, 129);
+            nameLbl.Name = "addressLbl";
+            nameLbl.Size = new Size(394, 20);
+            nameLbl.TabIndex = 0;
+            nameLbl.Text = "Название:";
             // 
             // phoneLbl
             // 
-            phoneLbl.AutoSize = true;
-            phoneLbl.Dock = DockStyle.Bottom;
-            phoneLbl.Location = new Point(3, 279);
-            phoneLbl.Name = "phoneLbl";
-            phoneLbl.Size = new Size(394, 20);
-            phoneLbl.TabIndex = 1;
-            phoneLbl.Text = "ФИО руководителя:";
+            headLbl.AutoSize = true;
+            headLbl.Dock = DockStyle.Bottom;
+            headLbl.Location = new Point(3, 279);
+            headLbl.Name = "phoneLbl";
+            headLbl.Size = new Size(394, 20);
+            headLbl.TabIndex = 1;
+            headLbl.Text = "ФИО руководителя:";
             // 
             // addressField
             // 
-            addressField.Dock = DockStyle.Bottom;
-            addressField.Location = new Point(403, 119);
-            addressField.Name = "addressField";
-            addressField.Size = new Size(394, 27);
-            addressField.TabIndex = 12;
+            nameField.Dock = DockStyle.Bottom;
+            nameField.Location = new Point(403, 119);
+            nameField.Name = "addressField";
+            nameField.Size = new Size(394, 27);
+            nameField.TabIndex = 12;
             // 
             // btnSave
             // 
@@ -134,10 +134,10 @@
         #endregion
 
         private TableLayoutPanel tableLayout;
-        private Label addressLbl;
-        private Label phoneLbl;
-        private TextBox addressField;
-        private TextBox phoneField;
+        private Label nameLbl;
+        private Label headLbl;
+        private TextBox nameField;
+        private TextBox headField;
         private Button btnCancel;
         private Button btnSave;
     }

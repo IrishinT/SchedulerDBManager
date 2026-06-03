@@ -30,7 +30,8 @@
         {
             tableLayoutPanel1 = new TableLayoutPanel();
             btnSchedule = new Button();
-            button1 = new Button();
+            btnSections = new Button();
+            btnDepartments = new Button();
             tableLayoutPanel1.SuspendLayout();
             SuspendLayout();
             // 
@@ -40,7 +41,8 @@
             tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
             tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
             tableLayoutPanel1.Controls.Add(btnSchedule, 0, 1);
-            tableLayoutPanel1.Controls.Add(button1, 1, 1);
+            tableLayoutPanel1.Controls.Add(btnSections, 1, 1);
+            tableLayoutPanel1.Controls.Add(btnDepartments, 0, 2);
             tableLayoutPanel1.Dock = DockStyle.Fill;
             tableLayoutPanel1.Location = new Point(0, 0);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -63,16 +65,27 @@
             btnSchedule.Text = "Смены";
             btnSchedule.UseVisualStyleBackColor = true;
             // 
-            // button1
+            // btnSections
             // 
-            button1.Dock = DockStyle.Fill;
-            button1.Location = new Point(435, 147);
-            button1.Margin = new Padding(35);
-            button1.Name = "button1";
-            button1.Size = new Size(330, 42);
-            button1.TabIndex = 1;
-            button1.Text = "Участки";
-            button1.UseVisualStyleBackColor = true;
+            btnSections.Dock = DockStyle.Fill;
+            btnSections.Location = new Point(435, 147);
+            btnSections.Margin = new Padding(35);
+            btnSections.Name = "btnSections";
+            btnSections.Size = new Size(330, 42);
+            btnSections.TabIndex = 1;
+            btnSections.Text = "Участки";
+            btnSections.UseVisualStyleBackColor = true;
+            // 
+            // btnDepartments
+            // 
+            btnDepartments.Dock = DockStyle.Fill;
+            btnDepartments.Location = new Point(35, 259);
+            btnDepartments.Margin = new Padding(35);
+            btnDepartments.Name = "btnDepartments";
+            btnDepartments.Size = new Size(330, 42);
+            btnDepartments.TabIndex = 2;
+            btnDepartments.Text = "Подразделения";
+            btnDepartments.UseVisualStyleBackColor = true;
             // 
             // MainForm
             // 
@@ -90,6 +103,7 @@
 
         private TableLayoutPanel tableLayoutPanel1;
         private Button btnSchedule;
-        private Button button1;
+        private Button btnSections;
+        private Button btnDepartments;
     }
 }
