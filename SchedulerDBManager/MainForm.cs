@@ -1,90 +1,40 @@
-using SchedulerDBManager.BusinessLogic.Services;
-using SchedulerDBManager.DataAccess.Database;
-using SchedulerDBManager.DataAccess.Database.Access;
-using SchedulerDBManager.DataAccess.Repositories;
-using SchedulerDBManager.DataAccess.Repositories.Access;
-using SchedulerDBManager.Presentation;
+п»їusing SchedulerDBManager.BusinessLogic.Services;
+using System;
+using System.Windows.Forms;
 
-
-namespace SchedulerDBManager.Presentaton
+namespace SchedulerDBManager.Presentation
 {
     public partial class MainForm : Form
     {
+        private readonly ScheduleService _scheduleService;
+        private readonly SectionService _sectionService;
 
-        public MainForm()
+        // РџСЂРёРЅРёРјР°РµРј СЃРµСЂРІРёСЃС‹ РёР· LoadForm
+        public MainForm(ScheduleService scheduleService, SectionService sectionService)
         {
             InitializeComponent();
+            _scheduleService = scheduleService;
+            _sectionService = sectionService;
 
-            explorerOpenBtn.Click += ExplorerOpenBtn_Click;
-            connectBtn.Click += ConnectBtn_Click;
+            // РџСЂРёРІСЏР·С‹РІР°РµРј СЃРѕР±С‹С‚РёСЏ РєРЅРѕРїРєР°Рј
+            btnSchedule.Click += BtnSchedule_Click;
+            button1.Click += BtnSections_Click;
+
+            // Р§С‚РѕР±С‹ РїСЂРё Р·Р°РєСЂС‹С‚РёРё MainForm Р·Р°РєСЂС‹РІР°Р»РѕСЃСЊ РІСЃРµ РїСЂРёР»РѕР¶РµРЅРёРµ
+            this.FormClosed += (s, e) => Application.Exit();
         }
 
-        private void ExplorerOpenBtn_Click(object sender, EventArgs e)
+        private void BtnSchedule_Click(object sender, EventArgs e)
         {
-            using (OpenFileDialog openFileDialog = new OpenFileDialog())
-            {
-                openFileDialog.Filter = "Access Database (*.accdb)|*.accdb|All files (*.*)|*.*";
-                openFileDialog.Title = "Выберите файл базы данных";
-                
-                if (openFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    filePathField.Text = openFileDialog.FileName;
-                }
-            }
+            // РћС‚РєСЂС‹РІР°РµРј С„РѕСЂРјСѓ СЃРјРµРЅ Рё РїРµСЂРµРґР°РµРј РµР№ РЅСѓР¶РЅС‹Рµ СЃРµСЂРІРёСЃС‹
+            ScheduleForm scheduleForm = new ScheduleForm(_scheduleService, _sectionService);
+            scheduleForm.ShowDialog();
         }
 
-        private void ConnectBtn_Click(object sender, EventArgs e)
+        private void BtnSections_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(filePathField.Text))
-            {
-                MessageBox.Show("Выберите файл базы данных", 
-                    "Предупреждение", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            if (!File.Exists(filePathField.Text))
-            {
-                MessageBox.Show("Файл базы данных не найден", 
-                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            try
-            {
-                // Создаем подключение к базе данных
-                IDatabase database = new AccessDatabase(filePathField.Text);
-                
-                // Проверяем подключение
-                if (database is AccessDatabase accessDb)
-                {
-                    try { 
-                        accessDb.CheckConnection();
-                    } catch (Exception ex) {
-                        MessageBox.Show("Не удалось подключиться к базе данных",
-                        $"Ошибка {ex.Message}", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                }
-
-                // Создаем репозиторий и сервис
-                IScheduleRepository repository = new AccessScheduleRepository(database);
-                ScheduleService scheduleService = new ScheduleService(repository);
-
-                ISectionRepository sectionRepository = new AccessSectionRepository(database);
-                SectionService sectionService = new SectionService(sectionRepository);
-
-                // Открываем форму Schedule и передаем сервис
-                ScheduleForm scheduleForm = new ScheduleForm(scheduleService, sectionService);
-                scheduleForm.Show();
-                
-                // Скрываем главную форму или оставляем открытой
-                this.Hide(); // или this.Show() если нужно показать обе
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Ошибка подключения к базе данных: {ex.Message}", 
-                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            // TODO: СЂРµР°Р»РёР·РѕРІР°С‚СЊ С„РѕСЂРјСѓ РґР»СЏ СѓРїСЂР°РІР»РµРЅРёСЏ СѓС‡Р°СЃС‚РєР°РјРё
+            MessageBox.Show("Р¤СѓРЅРєС†РёРѕРЅР°Р» СѓРїСЂР°РІР»РµРЅРёСЏ СѓС‡Р°СЃС‚РєР°РјРё РІ СЂР°Р·СЂР°Р±РѕС‚РєРµ.");
         }
-
     }
 }

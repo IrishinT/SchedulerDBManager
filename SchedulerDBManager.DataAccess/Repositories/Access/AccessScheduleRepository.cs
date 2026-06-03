@@ -18,7 +18,9 @@ namespace SchedulerDBManager.DataAccess.Repositories.Access
 
         public IEnumerable<Schedule> GetAll()
         {
-            string sql = "SELECT * FROM schedule";
+            string sql = @"SELECT s.*, sec.address 
+                   FROM schedule s 
+                   INNER JOIN sections sec ON s.section_id = sec.section_id";
             var dataTable = db.ExecuteSelect(sql);
             return MapToDomain(dataTable);
         }
@@ -49,7 +51,7 @@ namespace SchedulerDBManager.DataAccess.Repositories.Access
 
         public void Update(Schedule s)
         {
-            string sql = $"UPDATE schedule SET start_time=?, end_time=?, duration=?, worker_count=?, supervisor_fullname=?, section_id=?, shift_date=? WHERE shift_id={s.ShiftId}";
+            string sql = $"UPDATE schedule SET start_time=?, end_time=?, duration=?, worker_count=?, supervisor_fullname=?, section_id=?, shift_date=? WHERE shift_id=?";
 
             db.ExecuteNonQuery(sql,
                 new OleDbParameter("@p1", OleDbType.Date) { Value = s.StartTime },
@@ -58,14 +60,15 @@ namespace SchedulerDBManager.DataAccess.Repositories.Access
                 new OleDbParameter("@p4", OleDbType.Integer) { Value = s.WorkerCount },
                 new OleDbParameter("@p5", OleDbType.VarWChar) { Value = (object)s.SupervisorFullname ?? DBNull.Value },
                 new OleDbParameter("@p6", OleDbType.Integer) { Value = s.SectionId },
-                new OleDbParameter("@p7", OleDbType.Date) { Value = s.ShiftDate }
+                new OleDbParameter("@p7", OleDbType.Date) { Value = s.ShiftDate },
+                new OleDbParameter("@p8", OleDbType.Integer) { Value = s.ShiftId }
             );
         }
 
         public void Delete(int id)
         {
-            string sql = $"DELETE FROM schedule WHERE shift_id={id}";
-            db.ExecuteNonQuery(sql);
+            string sql = $"DELETE FROM schedule WHERE shift_id=?";
+            db.ExecuteNonQuery(sql, new OleDbParameter("@p1", OleDbType.Integer) { Value = id });
         }
 
         // Вспомогательный метод (Маппер: таблица -> список объектов)
@@ -83,6 +86,7 @@ namespace SchedulerDBManager.DataAccess.Repositories.Access
                     WorkerCount = Convert.ToInt32(row["worker_count"]),
                     SupervisorFullname = row["supervisor_fullname"].ToString(),
                     SectionId = Convert.ToInt32(row["section_id"]),
+                    SectionAddress = row["address"]?.ToString().Replace("\"", "").Trim(),
                     ShiftDate = Convert.ToDateTime(row["shift_date"])
                 });
             }

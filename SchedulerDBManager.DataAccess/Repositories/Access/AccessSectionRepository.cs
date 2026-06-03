@@ -43,19 +43,20 @@ namespace SchedulerDBManager.DataAccess.Repositories.Access
 
         public void Update(Section s)
         {
-            string sql = $"UPDATE sections SET address=?, department_id=?, phone=? WHERE section_id={s.SectionId}";
+            string sql = $"UPDATE sections SET address=?, department_id=?, phone=? WHERE section_id=?";
 
             db.ExecuteNonQuery(sql,
                 new OleDbParameter("@p1", OleDbType.LongVarWChar) { Value = s.Address ?? (object)DBNull.Value },
                 new OleDbParameter("@p2", OleDbType.Integer) { Value = Convert.ToInt32(s.DepartmentId) },
-                new OleDbParameter("@p3", OleDbType.VarWChar) { Value = s.Phone ?? (object)DBNull.Value }
+                new OleDbParameter("@p3", OleDbType.VarWChar) { Value = s.Phone ?? (object)DBNull.Value },
+                new OleDbParameter("@p4", OleDbType.Integer) { Value = s.SectionId }
             );
         }
 
         public void Delete(int id)
         {
-            string sql = $"DELETE FROM sections WHERE section_id={id}";
-            db.ExecuteNonQuery(sql);
+            string sql = $"DELETE FROM sections WHERE section_id=?";
+            db.ExecuteNonQuery(sql, new OleDbParameter("@p1", OleDbType.Integer) { Value = id });
         }
 
         // Вспомогательный метод для маппинга данных
