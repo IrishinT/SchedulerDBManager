@@ -1,6 +1,6 @@
 ﻿namespace SchedulerDBManager.Presentation
 {
-    partial class SectionsForm
+    partial class SectionForm
     {
         /// <summary>
         /// Required designer variable.

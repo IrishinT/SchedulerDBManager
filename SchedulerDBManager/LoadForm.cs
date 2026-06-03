@@ -63,13 +63,15 @@ namespace SchedulerDBManager.Presentaton
                 // 3. Создаем все репозитории
                 IScheduleRepository scheduleRepo = new AccessScheduleRepository(database);
                 ISectionRepository sectionRepo = new AccessSectionRepository(database);
+                IDepartmentRepository departmentRepo = new AccessDepartmentRepository(database);
 
                 // 4. Создаем все сервисы
                 ScheduleService scheduleService = new ScheduleService(scheduleRepo);
                 SectionService sectionService = new SectionService(sectionRepo);
+                DepartmentService departmentService = new DepartmentService(departmentRepo);
 
                 // 5. Открываем ГЛАВНОЕ МЕНЮ и передаем туда сервисы
-                MainForm mainForm = new MainForm(scheduleService, sectionService);
+                MainForm mainForm = new MainForm(scheduleService, sectionService, departmentService);
                 mainForm.Show();
 
                 // Скрываем форму загрузки

@@ -8,13 +8,15 @@ namespace SchedulerDBManager.Presentation
     {
         private readonly ScheduleService _scheduleService;
         private readonly SectionService _sectionService;
+        private readonly DepartmentService _departmentService;
 
         // Принимаем сервисы из LoadForm
-        public MainForm(ScheduleService scheduleService, SectionService sectionService)
+        public MainForm(ScheduleService scheduleService, SectionService sectionService, DepartmentService departmentService)
         {
             InitializeComponent();
             _scheduleService = scheduleService;
             _sectionService = sectionService;
+            _departmentService = departmentService;
 
             // Привязываем события кнопкам
             btnSchedule.Click += BtnSchedule_Click;
@@ -33,8 +35,8 @@ namespace SchedulerDBManager.Presentation
 
         private void BtnSections_Click(object sender, EventArgs e)
         {
-            // TODO: реализовать форму для управления участками
-            MessageBox.Show("Функционал управления участками в разработке.");
+            SectionForm sectionForm = new SectionForm(_sectionService, _departmentService);
+            sectionForm.ShowDialog();
         }
     }
 }
