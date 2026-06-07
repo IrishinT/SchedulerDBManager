@@ -210,6 +210,7 @@
             // 
             searchField.Location = new Point(10, 32);
             searchField.Name = "searchField";
+            searchField.PlaceholderText = "Введите адрес...";
             searchField.Size = new Size(150, 27);
             searchField.TabIndex = 5;
             // 

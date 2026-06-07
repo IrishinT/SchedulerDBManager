@@ -10,6 +10,8 @@ namespace SchedulerDBManager.Presentation
     {
         private readonly SectionService sectionService;
         private readonly DepartmentService departmentService;
+
+        // Списки для хранения данных в памяти (для быстрой фильтрации)
         private List<Section> allSections = new List<Section>();
         private List<Department> departments = new List<Department>();
 
@@ -38,34 +40,110 @@ namespace SchedulerDBManager.Presentation
 
         private void SectionForm_Load(object sender, EventArgs e)
         {
+            LoadFilterData();
             RefreshGrid();
+
+            // Устанавливаем начальное значение сортировки
+            if (cmbSortBy.Items.Count > 0) cmbSortBy.SelectedIndex = 0;
+        }
+
+        private void LoadFilterData()
+        {
+            try
+            {
+                // Получаем все подразделения для фильтра
+                departments = departmentService.GetAllDepartments().ToList();
+
+                cmbFilterDepartment.Items.Clear();
+                cmbFilterDepartment.Items.Add("Все подразделения"); // Элемент для сброса фильтра
+
+                foreach (Department dept in departments)
+                {
+                    cmbFilterDepartment.Items.Add(dept.DepartmentName);
+                }
+
+                cmbFilterDepartment.SelectedIndex = 0;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка загрузки фильтров: {ex.Message}");
+            }
         }
 
         private void RefreshGrid()
         {
             try
             {
-                dgvSections.DataSource = null;
-                dgvSections.DataSource = sectionService.GetAllSections().ToList();
+                // Загружаем актуальные данные из БД в кэш
+                allSections = sectionService.GetAllSections().ToList();
 
-                // Скрываем технические ID
-                if (dgvSections.Columns.Contains("SectionId")) dgvSections.Columns["SectionId"].Visible = false;
-                if (dgvSections.Columns.Contains("DepartmentId")) dgvSections.Columns["DepartmentId"].Visible = false;
+                // Применяем фильтры (этот метод обновит dgvSections.DataSource)
+                ApplyFilters();
 
-                // Переводим названия
-                if (dgvSections.Columns.Contains("Address")) dgvSections.Columns["Address"].HeaderText = "Адрес";
-                if (dgvSections.Columns.Contains("DepartmentName")) dgvSections.Columns["DepartmentName"].HeaderText = "Подразделение";
-                if (dgvSections.Columns.Contains("Phone")) dgvSections.Columns["Phone"].HeaderText = "Телефон";
-
-                // Растягиваем адрес
-                if (dgvSections.Columns.Contains("Address")) dgvSections.Columns["Address"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                // Настройка внешнего вида колонок (выполняется один раз при наличии данных)
+                SetupGridColumns();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка: {ex.Message}");
+                MessageBox.Show($"Ошибка при обновлении данных: {ex.Message}");
             }
         }
 
+        private void ApplyFilters()
+        {
+            if (allSections == null) return;
+
+            IEnumerable<Section> filteredData = allSections;
+
+            // 1. Текстовый поиск (по адресу)
+            string searchText = searchField.Text.Trim().ToLower();
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                filteredData = filteredData.Where(s =>
+                    s.Address != null && s.Address.ToLower().Contains(searchText)
+                );
+            }
+
+            // 2. Фильтрация по подразделению
+            if (cmbFilterDepartment.SelectedIndex > 0) // Если выбрано конкретное подразделение (не "Все")
+            {
+                string selectedDeptName = cmbFilterDepartment.SelectedItem.ToString();
+                filteredData = filteredData.Where(s => s.DepartmentName == selectedDeptName);
+            }
+
+            // 3. Сортировка
+            string sortOption = cmbSortBy.SelectedItem?.ToString();
+            switch (sortOption)
+            {
+                case "По адресу":
+                    filteredData = filteredData.OrderBy(s => s.Address);
+                    break;
+                case "По телефону":
+                    filteredData = filteredData.OrderBy(s => s.Phone);
+                    break;
+            }
+
+            // Обновляем источник данных таблицы
+            dgvSections.DataSource = filteredData.ToList();
+        }
+
+        private void SetupGridColumns()
+        {
+            if (dgvSections.Columns.Count == 0) return;
+
+            // Скрываем технические ID
+            if (dgvSections.Columns.Contains("SectionId")) dgvSections.Columns["SectionId"].Visible = false;
+            if (dgvSections.Columns.Contains("DepartmentId")) dgvSections.Columns["DepartmentId"].Visible = false;
+
+            // Переводим названия заголовков
+            if (dgvSections.Columns.Contains("Address")) dgvSections.Columns["Address"].HeaderText = "Адрес";
+            if (dgvSections.Columns.Contains("DepartmentName")) dgvSections.Columns["DepartmentName"].HeaderText = "Подразделение";
+            if (dgvSections.Columns.Contains("Phone")) dgvSections.Columns["Phone"].HeaderText = "Телефон";
+
+            // Оформление
+            if (dgvSections.Columns.Contains("Address"))
+                dgvSections.Columns["Address"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+        }
 
 
         private void btnAdd_Click(object sender, EventArgs e)

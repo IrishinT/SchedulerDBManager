@@ -125,7 +125,7 @@
             ClientSize = new Size(800, 450);
             Controls.Add(tableLayout);
             Name = "DepartmentEditForm";
-            Text = "ScheduleEditForm";
+            Text = "DepartmentEditForm";
             tableLayout.ResumeLayout(false);
             tableLayout.PerformLayout();
             ResumeLayout(false);
