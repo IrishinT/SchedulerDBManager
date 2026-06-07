@@ -37,15 +37,7 @@
             btnSave = new Button();
             sectionAddress = new ComboBox();
             addressField = new TextBox();
-            panelTopActions = new Panel();
-            sortLbl = new Label();
-            filterCmb = new ComboBox();
-            filterLbl = new Label();
-            cmbSortBy = new ComboBox();
-            searchLbl = new Label();
-            searchField = new TextBox();
             tableLayout.SuspendLayout();
-            panelTopActions.SuspendLayout();
             SuspendLayout();
             // 
             // tableLayout
@@ -62,7 +54,7 @@
             tableLayout.Controls.Add(sectionAddress, 1, 2);
             tableLayout.Controls.Add(addressField, 1, 0);
             tableLayout.Dock = DockStyle.Fill;
-            tableLayout.Location = new Point(0, 60);
+            tableLayout.Location = new Point(0, 0);
             tableLayout.Name = "tableLayout";
             tableLayout.RowCount = 4;
             tableLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
@@ -150,84 +142,16 @@
             addressField.Size = new Size(394, 27);
             addressField.TabIndex = 12;
             // 
-            // panelTopActions
-            // 
-            panelTopActions.BackColor = Color.WhiteSmoke;
-            panelTopActions.Controls.Add(sortLbl);
-            panelTopActions.Controls.Add(filterCmb);
-            panelTopActions.Controls.Add(filterLbl);
-            panelTopActions.Controls.Add(cmbSortBy);
-            panelTopActions.Controls.Add(searchLbl);
-            panelTopActions.Controls.Add(searchField);
-            panelTopActions.Dock = DockStyle.Top;
-            panelTopActions.Location = new Point(0, 0);
-            panelTopActions.Name = "panelTopActions";
-            panelTopActions.Size = new Size(800, 60);
-            panelTopActions.TabIndex = 1;
-            // 
-            // sortLbl
-            // 
-            sortLbl.Location = new Point(559, 3);
-            sortLbl.Name = "sortLbl";
-            sortLbl.Size = new Size(120, 20);
-            sortLbl.TabIndex = 0;
-            sortLbl.Text = "Сортировать по:";
-            // 
-            // filterCmb
-            // 
-            filterCmb.DropDownStyle = ComboBoxStyle.DropDownList;
-            filterCmb.Items.AddRange(new object[] { "Адресу", "Телефону" });
-            filterCmb.Location = new Point(324, 26);
-            filterCmb.Name = "filterCmb";
-            filterCmb.Size = new Size(229, 28);
-            filterCmb.TabIndex = 1;
-            filterCmb.SelectedIndexChanged += cmbSortBy_SelectedIndexChanged;
-            // 
-            // filterLbl
-            // 
-            filterLbl.Location = new Point(324, 3);
-            filterLbl.Name = "filterLbl";
-            filterLbl.Size = new Size(120, 20);
-            filterLbl.TabIndex = 2;
-            filterLbl.Text = "Подразделение:";
-            // 
-            // cmbSortBy
-            // 
-            cmbSortBy.DropDownStyle = ComboBoxStyle.DropDownList;
-            cmbSortBy.Location = new Point(559, 26);
-            cmbSortBy.Name = "cmbSortBy";
-            cmbSortBy.Size = new Size(229, 28);
-            cmbSortBy.TabIndex = 3;
-            // 
-            // searchLbl
-            // 
-            searchLbl.Location = new Point(12, 3);
-            searchLbl.Name = "searchLbl";
-            searchLbl.Size = new Size(60, 20);
-            searchLbl.TabIndex = 4;
-            searchLbl.Text = "Поиск:";
-            // 
-            // searchField
-            // 
-            searchField.Location = new Point(12, 26);
-            searchField.Name = "searchField";
-            searchField.PlaceholderText = "Введите текст...";
-            searchField.Size = new Size(306, 27);
-            searchField.TabIndex = 5;
-            // 
             // SectionEditForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
             Controls.Add(tableLayout);
-            Controls.Add(panelTopActions);
             Name = "SectionEditForm";
             Text = "ScheduleEditForm";
             tableLayout.ResumeLayout(false);
             tableLayout.PerformLayout();
-            panelTopActions.ResumeLayout(false);
-            panelTopActions.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -242,12 +166,5 @@
         private TextBox phoneField;
         private Button btnCancel;
         private Button btnSave;
-        private Panel panelTopActions;
-        private TextBox searchField;
-        private Label searchLbl;
-        private ComboBox cmbSortBy;
-        private Label filterLbl;
-        private ComboBox filterCmb;
-        private Label sortLbl;
     }
 }

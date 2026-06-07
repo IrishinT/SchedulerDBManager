@@ -36,6 +36,13 @@
             btnDelete = new Button();
             btnEdit = new Button();
             btnAdd = new Button();
+            pnlSearch = new Panel();
+            sortLbl = new Label();
+            cmbSortBy = new ComboBox();
+            filterLbl = new Label();
+            cmbFilterDepartment = new ComboBox();
+            searchLbl = new Label();
+            searchField = new TextBox();
             contextMenuStrip1 = new ContextMenuStrip(components);
             ((System.ComponentModel.ISupportInitialize)dgvSections).BeginInit();
             ((System.ComponentModel.ISupportInitialize)splitContainer).BeginInit();
@@ -43,6 +50,7 @@
             splitContainer.Panel2.SuspendLayout();
             splitContainer.SuspendLayout();
             tableLayoutPanel.SuspendLayout();
+            pnlSearch.SuspendLayout();
             SuspendLayout();
             // 
             // dgvSections
@@ -50,10 +58,10 @@
             dgvSections.BackgroundColor = SystemColors.Control;
             dgvSections.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvSections.Dock = DockStyle.Fill;
-            dgvSections.Location = new Point(0, 0);
+            dgvSections.Location = new Point(0, 70);
             dgvSections.Name = "dgvSections";
             dgvSections.RowHeadersWidth = 51;
-            dgvSections.Size = new Size(546, 450);
+            dgvSections.Size = new Size(546, 380);
             dgvSections.TabIndex = 0;
             // 
             // splitContainer
@@ -69,6 +77,7 @@
             // splitContainer.Panel2
             // 
             splitContainer.Panel2.Controls.Add(dgvSections);
+            splitContainer.Panel2.Controls.Add(pnlSearch);
             splitContainer.Size = new Size(800, 450);
             splitContainer.SplitterDistance = 250;
             splitContainer.TabIndex = 1;
@@ -141,6 +150,69 @@
             btnAdd.Text = "Создать участок";
             btnAdd.UseVisualStyleBackColor = true;
             // 
+            // pnlSearch
+            // 
+            pnlSearch.BackColor = SystemColors.ControlLight;
+            pnlSearch.Controls.Add(sortLbl);
+            pnlSearch.Controls.Add(cmbSortBy);
+            pnlSearch.Controls.Add(filterLbl);
+            pnlSearch.Controls.Add(cmbFilterDepartment);
+            pnlSearch.Controls.Add(searchLbl);
+            pnlSearch.Controls.Add(searchField);
+            pnlSearch.Dock = DockStyle.Top;
+            pnlSearch.Location = new Point(0, 0);
+            pnlSearch.Name = "pnlSearch";
+            pnlSearch.Size = new Size(546, 70);
+            pnlSearch.TabIndex = 1;
+            // 
+            // sortLbl
+            // 
+            sortLbl.Location = new Point(340, 10);
+            sortLbl.Name = "sortLbl";
+            sortLbl.Size = new Size(150, 20);
+            sortLbl.TabIndex = 0;
+            sortLbl.Text = "Сортировка:";
+            // 
+            // cmbSortBy
+            // 
+            cmbSortBy.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbSortBy.Items.AddRange(new object[] { "Без сортировки", "По адресу", "По телефону" });
+            cmbSortBy.Location = new Point(340, 32);
+            cmbSortBy.Name = "cmbSortBy";
+            cmbSortBy.Size = new Size(160, 28);
+            cmbSortBy.TabIndex = 1;
+            // 
+            // filterLbl
+            // 
+            filterLbl.Location = new Point(170, 10);
+            filterLbl.Name = "filterLbl";
+            filterLbl.Size = new Size(150, 20);
+            filterLbl.TabIndex = 2;
+            filterLbl.Text = "Подразделение:";
+            // 
+            // cmbFilterDepartment
+            // 
+            cmbFilterDepartment.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbFilterDepartment.Location = new Point(170, 32);
+            cmbFilterDepartment.Name = "cmbFilterDepartment";
+            cmbFilterDepartment.Size = new Size(160, 28);
+            cmbFilterDepartment.TabIndex = 3;
+            // 
+            // searchLbl
+            // 
+            searchLbl.Location = new Point(10, 10);
+            searchLbl.Name = "searchLbl";
+            searchLbl.Size = new Size(150, 20);
+            searchLbl.TabIndex = 4;
+            searchLbl.Text = "Поиск:";
+            // 
+            // searchField
+            // 
+            searchField.Location = new Point(10, 32);
+            searchField.Name = "searchField";
+            searchField.Size = new Size(150, 27);
+            searchField.TabIndex = 5;
+            // 
             // contextMenuStrip1
             // 
             contextMenuStrip1.ImageScalingSize = new Size(20, 20);
@@ -154,13 +226,15 @@
             ClientSize = new Size(800, 450);
             Controls.Add(splitContainer);
             Name = "SectionForm";
-            Text = "Schedule";
+            Text = "Участки";
             ((System.ComponentModel.ISupportInitialize)dgvSections).EndInit();
             splitContainer.Panel1.ResumeLayout(false);
             splitContainer.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)splitContainer).EndInit();
             splitContainer.ResumeLayout(false);
             tableLayoutPanel.ResumeLayout(false);
+            pnlSearch.ResumeLayout(false);
+            pnlSearch.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -175,5 +249,11 @@
         private Button btnAdd;
         private Button btnHelp;
         private Panel pnlSearch;
+        private TextBox searchField;
+        private ComboBox cmbFilterDepartment;
+        private ComboBox cmbSortBy;
+        private Label searchLbl;
+        private Label filterLbl;
+        private Label sortLbl;
     }
 }

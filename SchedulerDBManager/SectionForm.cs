@@ -10,6 +10,8 @@ namespace SchedulerDBManager.Presentation
     {
         private readonly SectionService sectionService;
         private readonly DepartmentService departmentService;
+        private List<Section> allSections = new List<Section>();
+        private List<Department> departments = new List<Department>();
 
         public SectionForm(SectionService sectionService, DepartmentService departmentService)
         {
@@ -28,6 +30,10 @@ namespace SchedulerDBManager.Presentation
             btnEdit.Click += btnEdit_Click;
             btnDelete.Click += btnDelete_Click;
             btnHelp.Click += btnHelp_Click;
+
+            searchField.TextChanged += (s, e) => ApplyFilters();
+            cmbFilterDepartment.SelectedIndexChanged += (s, e) => ApplyFilters();
+            cmbSortBy.SelectedIndexChanged += (s, e) => ApplyFilters();
         }
 
         private void SectionForm_Load(object sender, EventArgs e)
