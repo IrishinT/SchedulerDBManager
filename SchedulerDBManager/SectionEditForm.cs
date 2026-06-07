@@ -58,5 +58,10 @@ namespace SchedulerDBManager.Presentation
                 CurrentSection.DepartmentId = (int)sectionAddress.SelectedValue;
             }
         }
+
+        private void cmbSortBy_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

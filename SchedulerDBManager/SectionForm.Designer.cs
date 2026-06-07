@@ -147,13 +147,13 @@
             contextMenuStrip1.Name = "contextMenuStrip1";
             contextMenuStrip1.Size = new Size(61, 4);
             // 
-            // SectionsForm
+            // SectionForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
             Controls.Add(splitContainer);
-            Name = "SectionsForm";
+            Name = "SectionForm";
             Text = "Schedule";
             ((System.ComponentModel.ISupportInitialize)dgvSections).EndInit();
             splitContainer.Panel1.ResumeLayout(false);
@@ -174,5 +174,6 @@
         private Button btnEdit;
         private Button btnAdd;
         private Button btnHelp;
+        private Panel pnlSearch;
     }
 }
