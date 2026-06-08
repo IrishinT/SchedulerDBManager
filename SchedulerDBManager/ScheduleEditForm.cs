@@ -1,94 +1,71 @@
-﻿    using SchedulerDBManager.DataAccess.Models;
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.Data;
-    using System.Drawing;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-    using System.Windows.Forms;
-    using static System.Collections.Specialized.BitVector32;
+﻿using SchedulerDBManager.DataAccess.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Forms;
 
-    namespace SchedulerDBManager.Presentation
+namespace SchedulerDBManager.Presentation
+{
+    public partial class ScheduleEditForm : Form
     {
-        public partial class ScheduleEditForm : Form
+        public Schedule CurrentSchedule { get; private set; }
+
+        public ScheduleEditForm(IEnumerable<Section> sections, Schedule schedule = null)
         {
-            public Schedule CurrentSchedule { get; private set; }
+            InitializeComponent();
+            SetupFormBehavior();
+            BindSectionsCombo(sections);
+            InitializeFormData(schedule);
+        }
 
-            public ScheduleEditForm(IEnumerable<DataAccess.Models.Section> sections, Schedule schedule = null)
+        private void SetupFormBehavior()
+        {
+            btnSave.DialogResult = DialogResult.OK;
+            btnCancel.DialogResult = DialogResult.Cancel;
+            this.AcceptButton = btnSave;
+            this.CancelButton = btnCancel;
+            btnSave.Click += BtnSave_Click;
+        }
+
+        private void BindSectionsCombo(IEnumerable<Section> sections)
+        {
+            var displaySections = sections.Select(s => new { Id = s.SectionId, Name = s.Address.Trim() }).ToList();
+            sectionAddress.DataSource = displaySections;
+            sectionAddress.DisplayMember = "Name";
+            sectionAddress.ValueMember = "Id";
+        }
+
+        private void InitializeFormData(Schedule schedule)
+        {
+            if (schedule == null)
             {
-                InitializeComponent();
-
-                btnSave.DialogResult = DialogResult.OK;
-                btnCancel.DialogResult = DialogResult.Cancel;
-
-                this.AcceptButton = btnSave;
-                this.CancelButton = btnCancel;
-
-                btnSave.Click += BtnSave_Click;
-
-                var cleanSections = sections.Select(s => new DataAccess.Models.Section
-                {
-                    SectionId = s.SectionId,
-                    Address = s.Address.Replace("\"", "").Trim()
-                }).ToList();
-
-                sectionAddress.DataSource = cleanSections;
-                sectionAddress.DisplayMember = "Address"; // Что видит пользователь
-                sectionAddress.ValueMember = "SectionId"; // Что сохранится в базу
-
-
-                if (schedule == null)
-                {
-                    this.Text = "Добавление смены";
-                    CurrentSchedule = new Schedule();
-                    // Дефолтные значения
-                    startTimeDate.Value = DateTime.Now;
-                    endTimeDate.Value = DateTime.Now.AddHours(8);
-                    workersCount.Value = 5;
-                }
-                else
-                {
-                    this.Text = "Редактирование смены";
-                    // Копируем данные, чтобы не менять оригинал до нажатия "Сохранить"
-                    CurrentSchedule = new Schedule
-                    {
-                        ShiftId = schedule.ShiftId,
-                        Duration = schedule.Duration,
-                        StartTime = schedule.StartTime,
-                        EndTime = schedule.EndTime,
-                        WorkerCount = schedule.WorkerCount,
-                        SupervisorFullname = schedule.SupervisorFullname,
-                        SectionId = schedule.SectionId
-                    };
-
-                    // Заполняем поля на форме
-                    startTimeDate.Value = CurrentSchedule.StartTime;
-                    endTimeDate.Value = CurrentSchedule.EndTime;
-                    supervisor.Text = CurrentSchedule.SupervisorFullname;
-                    workersCount.Value = CurrentSchedule.WorkerCount;
-                }
+                this.Text = "Добавление смены";
+                CurrentSchedule = new Schedule();
+                startTimeDate.Value = DateTime.Now;
+                endTimeDate.Value = DateTime.Now.AddHours(8);
+                workersCount.Value = 5;
             }
-
-            private void BtnSave_Click(object sender, EventArgs e)
+            else
             {
-                // Считываем данные с элементов управления обратно в объект
-                CurrentSchedule.StartTime = startTimeDate.Value;
-                CurrentSchedule.EndTime = endTimeDate.Value;
-                CurrentSchedule.SupervisorFullname = supervisor.Text.Trim();
-                CurrentSchedule.WorkerCount = (int)workersCount.Value;
+                this.Text = "Редактирование смены";
+                CurrentSchedule = new Schedule { ShiftId = schedule.ShiftId, SectionId = schedule.SectionId };
 
-                CurrentSchedule.ShiftDate = CurrentSchedule.StartTime.Date;
-                // Сразу пересчитываем длительность в часах
-                CurrentSchedule.Duration = (int)(CurrentSchedule.EndTime - CurrentSchedule.StartTime).TotalHours;
-
-                // Забираем ID выбранного участка из ComboBox
-                if (sectionAddress.SelectedValue != null)
-                {
-                    CurrentSchedule.SectionId = (int)sectionAddress.SelectedValue;
-                }
+                startTimeDate.Value = schedule.StartTime;
+                endTimeDate.Value = schedule.EndTime;
+                supervisor.Text = schedule.SupervisorFullname;
+                workersCount.Value = schedule.WorkerCount;
+                sectionAddress.SelectedValue = schedule.SectionId;
             }
+        }
 
+        private void BtnSave_Click(object sender, EventArgs e)
+        {
+            CurrentSchedule.StartTime = startTimeDate.Value;
+            CurrentSchedule.EndTime = endTimeDate.Value;
+            CurrentSchedule.SupervisorFullname = supervisor.Text;
+            CurrentSchedule.WorkerCount = (int)workersCount.Value;
+            if (sectionAddress.SelectedValue != null)
+                CurrentSchedule.SectionId = (int)sectionAddress.SelectedValue;
         }
     }
+}

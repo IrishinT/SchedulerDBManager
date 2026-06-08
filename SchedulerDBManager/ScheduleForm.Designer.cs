@@ -74,7 +74,6 @@
             // splitContainer.Panel1
             // 
             splitContainer.Panel1.Controls.Add(tableLayoutPanel);
-            splitContainer.Panel1.Paint += splitContainer1_Panel1_Paint;
             // 
             // splitContainer.Panel2
             // 
@@ -107,7 +106,6 @@
             tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
             tableLayoutPanel.Size = new Size(250, 450);
             tableLayoutPanel.TabIndex = 0;
-            tableLayoutPanel.Paint += tableLayoutPanel_Paint;
             // 
             // btnHelp
             // 

@@ -1,5 +1,6 @@
 ﻿using SchedulerDBManager.BusinessLogic.Services;
 using SchedulerDBManager.DataAccess.Models;
+using SchedulerDBManager.Presentation.Helpers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -29,7 +30,14 @@ namespace SchedulerDBManager.Presentation
             InitializeComponent();
             this.scheduleService = service;
             this.sectionService = sectionService;
-            this.Load += Schedule_Load;
+
+            SetupEventHandlers();
+            InitializeToolTips();
+        }
+
+        private void SetupEventHandlers()
+        {
+            this.Load += (s, e) => { cmbSortBy.SelectedIndex = 0; RefreshData(); };
             btnAdd.Click += btnAdd_Click;
             btnEdit.Click += btnEdit_Click;
             btnDelete.Click += btnDelete_Click;
@@ -38,13 +46,6 @@ namespace SchedulerDBManager.Presentation
             cmbFilterSupervisor.SelectedIndexChanged += FilterControl_Changed;
             cmbFilterAddress.SelectedIndexChanged += FilterControl_Changed;
             cmbSortBy.SelectedIndexChanged += (s, e) => ApplyFilters();
-
-            dvgSchedules.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dvgSchedules.MultiSelect = false;
-            dvgSchedules.ReadOnly = true;
-            dvgSchedules.AllowUserToAddRows = false;
-
-            InitializeToolTips();
         }
 
         private void InitializeToolTips()
@@ -70,230 +71,129 @@ namespace SchedulerDBManager.Presentation
             toolTip.SetToolTip(dvgSchedules, "Кликните на строку, чтобы выбрать смену для редактирования или удаления");
         }
 
-        private void Schedule_Load(object sender, EventArgs e)
+        private void RefreshData()
         {
-            if (cmbSortBy.Items.Count > 0) cmbSortBy.SelectedIndex = 0;
-            RefreshGrid();
-        }
-
-        private void RefreshGrid()
-        {
-            try
+            UIHelper.SafeExecute(() =>
             {
                 allSchedules = scheduleService.GetAllSchedules().ToList();
-
-                // Сначала обновляем списки в комбобоксах, чтобы там были актуальные данные
-                ResetFilterSelections();
                 UpdateFilterControls();
-
                 ApplyFilters();
-                SetupColumns();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Ошибка: {ex.Message}");
-            }
-        }
 
-        private void ResetFilterSelections()
-        {
-            isUpdatingFilters = true;
-
-            cmbFilterSupervisor.Items.Clear();
-            cmbFilterSupervisor.Items.Add("Все");
-            cmbFilterSupervisor.SelectedIndex = 0;
-
-            cmbFilterAddress.Items.Clear();
-            cmbFilterAddress.Items.Add("Все");
-            cmbFilterAddress.SelectedIndex = 0;
-
-            isUpdatingFilters = false;
+                UIHelper.ConfigureGrid(
+                    dvgSchedules,
+                    hideColumns: ["ShiftId", "SectionId", "ShiftDate"],
+                    renameColumns: new Dictionary<string, string> {
+                        { "StartTime", "Начало смены" }, { "EndTime", "Конец смены" },
+                        { "Duration", "Длительность (ч)" }, { "WorkerCount", "Рабочих" },
+                        { "SupervisorFullname", "Начальник смены" }, { "SectionAddress", "Адрес участка" }
+                    },
+                    fillColumn: ["SectionAddress"] 
+                );
+            });
         }
 
         private void FilterControl_Changed(object sender, EventArgs e)
         {
             if (isUpdatingFilters) return;
-
-            isUpdatingFilters = true;
-
-            // Запоминаем, что выбрал пользователь
-            string selectedSupervisor = cmbFilterSupervisor.SelectedItem?.ToString();
-            string selectedAddress = cmbFilterAddress.SelectedItem?.ToString();
-
-            // 1. Обновляем список адресов на основе выбранного начальника
-            var availableAddresses = allSchedules
-                .Where(s => selectedSupervisor == "Все" || s.SupervisorFullname == selectedSupervisor)
-                .Select(s => s.SectionAddress)
-                .Distinct().OrderBy(x => x).ToList();
-
-            cmbFilterAddress.Items.Clear();
-            cmbFilterAddress.Items.Add("Все");
-            cmbFilterAddress.Items.AddRange(availableAddresses.ToArray());
-
-            // Возвращаем выбор адреса, если он еще доступен в новом списке
-            if (cmbFilterAddress.Items.Contains(selectedAddress))
-                cmbFilterAddress.SelectedItem = selectedAddress;
-            else
-                cmbFilterAddress.SelectedIndex = 0;
-
-            // 2. Обновляем список начальников на основе выбранного адреса
-            var availableSupervisors = allSchedules
-                .Where(s => selectedAddress == "Все" || s.SectionAddress == selectedAddress)
-                .Select(s => s.SupervisorFullname)
-                .Distinct().OrderBy(x => x).ToList();
-
-            cmbFilterSupervisor.Items.Clear();
-            cmbFilterSupervisor.Items.Add("Все");
-            cmbFilterSupervisor.Items.AddRange(availableSupervisors.ToArray());
-
-            // Возвращаем выбор начальника, если он еще доступен
-            if (cmbFilterSupervisor.Items.Contains(selectedSupervisor))
-                cmbFilterSupervisor.SelectedItem = selectedSupervisor;
-            else
-                cmbFilterSupervisor.SelectedIndex = 0;
-
-            isUpdatingFilters = false;
-
-            // Применяем результат к таблице
+            UpdateFilterControls();
             ApplyFilters();
         }
 
-        // Первичное заполнение фильтров при загрузке данных
         private void UpdateFilterControls()
         {
             isUpdatingFilters = true;
 
-            var supervisors = allSchedules.Select(s => s.SupervisorFullname).Distinct().OrderBy(x => x).ToArray();
-            var addresses = allSchedules.Select(s => s.SectionAddress).Distinct().OrderBy(x => x).ToArray();
+            string selSuper = cmbFilterSupervisor.SelectedItem?.ToString() ?? "Все";
+            string selAddress = cmbFilterAddress.SelectedItem?.ToString() ?? "Все";
 
-            cmbFilterSupervisor.Items.Clear();
-            cmbFilterSupervisor.Items.Add("Все");
-            cmbFilterSupervisor.Items.AddRange(supervisors);
-            cmbFilterSupervisor.SelectedIndex = 0;
+            // Выделяем получение уникальных значений в отдельные методы-хелперы LINQ
+            var supervisors = allSchedules.Where(s => selAddress == "Все" || s.SectionAddress == selAddress)
+                                          .Select(s => s.SupervisorFullname).Distinct().OrderBy(x => x).ToArray();
 
-            cmbFilterAddress.Items.Clear();
-            cmbFilterAddress.Items.Add("Все");
-            cmbFilterAddress.Items.AddRange(addresses);
-            cmbFilterAddress.SelectedIndex = 0;
+            var addresses = allSchedules.Where(s => selSuper == "Все" || s.SupervisorFullname == selSuper)
+                                        .Select(s => s.SectionAddress).Distinct().OrderBy(x => x).ToArray();
+
+            // Перезаписываем комбобоксы
+            UpdateComboBox(cmbFilterSupervisor, supervisors, selSuper);
+            UpdateComboBox(cmbFilterAddress, addresses, selAddress);
 
             isUpdatingFilters = false;
+        }
+
+        private void UpdateComboBox(ComboBox cmb, string[] items, string selectedValue)
+        {
+            cmb.Items.Clear();
+            cmb.Items.Add("Все");
+            cmb.Items.AddRange(items);
+            cmb.SelectedItem = cmb.Items.Contains(selectedValue) ? selectedValue : "Все";
         }
 
         private void ApplyFilters()
         {
             if (allSchedules == null) return;
 
-            string selectedSupervisor = cmbFilterSupervisor.SelectedItem?.ToString();
-            string selectedAddress = cmbFilterAddress.SelectedItem?.ToString();
+            string super = cmbFilterSupervisor.SelectedItem?.ToString();
+            string address = cmbFilterAddress.SelectedItem?.ToString();
 
-            // Фильтруем данные
-            var filtered = allSchedules.Where(s =>
-                (selectedSupervisor == "Все" || s.SupervisorFullname == selectedSupervisor) &&
-                (selectedAddress == "Все" || s.SectionAddress == selectedAddress)
-            );
+            // Чистый и понятный LINQ pipeline
+            var filtered = allSchedules
+                .Where(s => super == "Все" || s.SupervisorFullname == super)
+                .Where(s => address == "Все" || s.SectionAddress == address);
 
-            // Сортируем данные
-            string sortOption = cmbSortBy.SelectedItem?.ToString();
-            switch (sortOption)
+            filtered = cmbSortBy.SelectedItem?.ToString() switch
             {
-                case "По дате":
-                    filtered = filtered.OrderBy(s => s.StartTime);
-                    break;
-                case "По количеству рабочих":
-                    filtered = filtered.OrderByDescending(s => s.WorkerCount);
-                    break;
-                case "По длительности":
-                    filtered = filtered.OrderByDescending(s => s.Duration);
-                    break;
-            }
+                "По количеству рабочих" => filtered.OrderByDescending(s => s.WorkerCount),
+                "По длительности" => filtered.OrderByDescending(s => s.Duration),
+                _ => filtered.OrderBy(s => s.StartTime) // "По дате" по умолчанию
+            };
 
             dvgSchedules.DataSource = filtered.ToList();
         }
 
-        private void SetupColumns()
-        {
-            if (dvgSchedules.Columns.Count == 0) return;
-            // (Ваш существующий код скрытия ID и перевода заголовков)
-            if (dvgSchedules.Columns.Contains("ShiftId")) dvgSchedules.Columns["ShiftId"].Visible = false;
-            if (dvgSchedules.Columns.Contains("SectionId")) dvgSchedules.Columns["SectionId"].Visible = false;
-            if (dvgSchedules.Columns.Contains("ShiftDate")) dvgSchedules.Columns["ShiftDate"].Visible = false;
-
-            if (dvgSchedules.Columns.Contains("SectionAddress"))
-                dvgSchedules.Columns["SectionAddress"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-        }
-
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            var sections = sectionService.GetAllSections();
-
-            using (var editForm = new ScheduleEditForm(sections)) // Вызываем без параметров = создание
+            UIHelper.SafeExecute(() =>
             {
-                if (editForm.ShowDialog() == DialogResult.OK)
+                var sections = sectionService.GetAllSections();
+                using var form = new ScheduleEditForm(sections);
+                if (form.ShowDialog() == DialogResult.OK)
                 {
-                    try
-                    {
-                        scheduleService.CreateSchedule(editForm.CurrentSchedule);
-                        RefreshGrid();
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.Message, "Ошибка сохранения", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
+                    scheduleService.CreateSchedule(form.CurrentSchedule);
+                    RefreshData();
                 }
-            }
+            }, "Ошибка добавления");
         }
 
         private void btnEdit_Click(object sender, EventArgs e)
         {
-            if (dvgSchedules.SelectedRows.Count == 0)
-            {
-                MessageBox.Show("Выберите смену для редактирования.", "Внимание", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
+            if (dvgSchedules.SelectedRows.Count == 0) return;
 
-            // Получаем выбранный объект из таблицы
-            var selectedSchedule = (Schedule)dvgSchedules.SelectedRows[0].DataBoundItem;
-            var sections = sectionService.GetAllSections();
-
-            using (var editForm = new ScheduleEditForm(sections, selectedSchedule)) // Вызываем с параметром = редактирование
+            UIHelper.SafeExecute(() =>
             {
-                if (editForm.ShowDialog() == DialogResult.OK)
+                var schedule = (Schedule)dvgSchedules.SelectedRows[0].DataBoundItem;
+                using var form = new ScheduleEditForm(sectionService.GetAllSections(), schedule);
+                if (form.ShowDialog() == DialogResult.OK)
                 {
-                    try
-                    {
-                        scheduleService.UpdateSchedule(editForm.CurrentSchedule);
-                        RefreshGrid();
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.Message, "Ошибка обновления", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
+                    scheduleService.UpdateSchedule(form.CurrentSchedule);
+                    RefreshData();
                 }
-            }
+            }, "Ошибка обновления");
         }
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
             if (dvgSchedules.SelectedRows.Count == 0) return;
+            var schedule = (Schedule)dvgSchedules.SelectedRows[0].DataBoundItem;
 
-            var selectedSchedule = (Schedule)dvgSchedules.SelectedRows[0].DataBoundItem;
-
-            var result = MessageBox.Show("Вы уверены, что хотите удалить выбранную смену?",
-                                         "Подтверждение", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-            if (result == DialogResult.Yes)
+            if (UIHelper.ConfirmDelete($"Смена на участке: {schedule.SectionAddress}"))
             {
-                try
-                {
-                    scheduleService.RemoveSchedule(selectedSchedule.ShiftId);
-                    RefreshGrid();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message, "Ошибка удаления", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                UIHelper.SafeExecute(() => {
+                    scheduleService.RemoveSchedule(schedule.ShiftId);
+                    RefreshData();
+                }, "Ошибка удаления");
             }
         }
+
 
         private void btnHelp_Click(object sender, EventArgs e)
         {
@@ -315,16 +215,6 @@ namespace SchedulerDBManager.Presentation
                 "- Длительность смены рассчитывается программой автоматически.";
 
             MessageBox.Show(helpText, "Справка пользователя", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-
-        private void splitContainer1_Panel1_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void tableLayoutPanel_Paint(object sender, PaintEventArgs e)
-        {
-
         }
     }
 }

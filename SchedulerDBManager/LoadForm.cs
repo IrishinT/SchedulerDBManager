@@ -67,8 +67,8 @@ namespace SchedulerDBManager.Presentaton
 
                 // 4. Создаем все сервисы
                 ScheduleService scheduleService = new ScheduleService(scheduleRepo);
-                SectionService sectionService = new SectionService(sectionRepo);
-                DepartmentService departmentService = new DepartmentService(departmentRepo);
+                SectionService sectionService = new SectionService(sectionRepo, scheduleRepo);
+                DepartmentService departmentService = new DepartmentService(departmentRepo, sectionRepo, scheduleRepo);
 
                 // 5. Открываем ГЛАВНОЕ МЕНЮ и передаем туда сервисы
                 MainForm mainForm = new MainForm(scheduleService, sectionService, departmentService);
