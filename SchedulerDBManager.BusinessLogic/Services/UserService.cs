@@ -62,6 +62,11 @@ namespace SchedulerDBManager.BusinessLogic.Services
             if (user.Role < 1 || user.Role > 3)
                 throw new ArgumentException("Указана некорректная роль пользователя.");
 
+            if (user.Password.Length < 6)
+                throw new ArgumentException("Пароль слишком короткий (минимум 6 символов).");
+
+
+
             user.Login = user.Login.Trim();
         }
     }

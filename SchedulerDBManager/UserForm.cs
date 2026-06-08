@@ -54,7 +54,7 @@ namespace SchedulerDBManager.Presentation
                 // Настройка таблицы (скрываем пароль и ID)
                 UIHelper.ConfigureGrid(
                     dgvSections, // Имя из вашего дизайнера
-                    hideColumns: ["UserId", "Password", "Role"],
+                    hideColumns: ["UserId", "Password", "Role", "IsAdmin", "CanEditData"],
                     renameColumns: new Dictionary<string, string> {
                         { "Login", "Логин" },
                         { "RoleName", "Уровень доступа" }

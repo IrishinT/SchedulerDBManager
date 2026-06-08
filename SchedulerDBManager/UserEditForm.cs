@@ -66,7 +66,9 @@ namespace SchedulerDBManager.Presentation
         {
             // Валидация логина и роли через Helper
             if (!UIHelper.ValidateRequired(loginField, "Логин")) { this.DialogResult = DialogResult.None; return; }
+            if (!UIHelper.ValidateRequired(passField, "Пароль")) { this.DialogResult = DialogResult.None; return; }
             if (!UIHelper.ValidateSelection(roleField, "Роль")) { this.DialogResult = DialogResult.None; return; }
+            if (!UIHelper.ValidateMinLength(passField, "Пароль", 6)){ this.DialogResult = DialogResult.None; return; }
 
             // Если это новый пользователь, пароль обязателен
             if (CurrentUser.UserId == 0 && !UIHelper.ValidateRequired(passField, "Пароль"))

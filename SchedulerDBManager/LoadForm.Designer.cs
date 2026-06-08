@@ -58,7 +58,7 @@
             connectBtn.Text = "Подключение";
             connectBtn.UseVisualStyleBackColor = true;
             // 
-            // MainForm
+            // LoadForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -66,7 +66,9 @@
             Controls.Add(connectBtn);
             Controls.Add(explorerOpenBtn);
             Controls.Add(filePathField);
-            Name = "MainForm";
+            MaximizeBox = false;
+            FormBorderStyle = FormBorderStyle.FixedDialog;
+            Name = "LoadForm";
             Text = "Подключение к БД";
             ResumeLayout(false);
             PerformLayout();

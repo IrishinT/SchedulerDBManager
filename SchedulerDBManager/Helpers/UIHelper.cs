@@ -17,6 +17,19 @@ namespace SchedulerDBManager.Presentation.Helpers
             if (btnDelete != null) btnDelete.Enabled = hasAccess;
         }
 
+        public static bool ValidateMinLength(Control control, string fieldName, int minLength)
+        {
+            // Убираем пробелы по краям перед проверкой длины
+            if (control.Text.Trim().Length < minLength)
+            {
+                MessageBox.Show($"Поле '{fieldName}' должно содержать не менее {minLength} символов.",
+                    "Валидация", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                control.Focus();
+                return false;
+            }
+            return true;
+        }
+
         // Проверка текстового поля на пустоту
         public static bool ValidateRequired(Control control, string fieldName)
         {

@@ -142,6 +142,8 @@
             Controls.Add(splitContainer1);
             Name = "AuthForm";
             Text = "Авторизация";
+            MaximizeBox = false;
+            FormBorderStyle = FormBorderStyle.FixedDialog;
             splitContainer1.Panel1.ResumeLayout(false);
             splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
