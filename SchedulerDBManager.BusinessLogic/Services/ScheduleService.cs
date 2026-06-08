@@ -1,67 +1,53 @@
 ﻿using SchedulerDBManager.DataAccess.Models;
 using SchedulerDBManager.DataAccess.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SchedulerDBManager.BusinessLogic.Services
 {
     public class ScheduleService
     {
-        private readonly IScheduleRepository repository;
+        private readonly IScheduleRepository _scheduleRepo;
 
-
-        public ScheduleService(IScheduleRepository repository)
+        public ScheduleService(IScheduleRepository scheduleRepo)
         {
-            this.repository = repository;
+            _scheduleRepo = scheduleRepo;
         }
 
-        public IEnumerable<Schedule> GetAllSchedules()
-        {
-            return repository.GetAll();
-        }
-
-        public IEnumerable<Schedule> FindBySupervisor(string name)
-        {
-            if (string.IsNullOrWhiteSpace(name))
-                return GetAllSchedules();
-
-            return repository.SearchBySupervisor(name.Trim());
-        }
+        public IEnumerable<Schedule> GetAllSchedules() => _scheduleRepo.GetAll();
 
         public void CreateSchedule(Schedule schedule)
         {
-            // Если длительность не задана, вычисляем ее
-            if (schedule.Duration <= 0)
-            {
-                schedule.Duration = (int)(schedule.EndTime - schedule.StartTime).TotalHours;
-            }
-
-            if (schedule.WorkerCount < 0)
-                throw new ArgumentException("Количество рабочих не может быть отрицательным.");
-
-            repository.Add(schedule);
-        }
-
-        public void RemoveSchedule(int id)
-        {
-            repository.Delete(id);
+            ValidateAndPrepare(schedule);
+            _scheduleRepo.Add(schedule);
         }
 
         public void UpdateSchedule(Schedule schedule)
         {
-            // Если длительность не задана или изменено время, пересчитываем
-            if (schedule.Duration <= 0)
-            {
-                schedule.Duration = (int)(schedule.EndTime - schedule.StartTime).TotalHours;
-            }
+            ValidateAndPrepare(schedule);
+            _scheduleRepo.Update(schedule);
+        }
 
-            if (schedule.WorkerCount < 0)
-                throw new ArgumentException("Количество рабочих не может быть отрицательным.");
+        public void RemoveSchedule(int id)
+        {
+            _scheduleRepo.Delete(id);
+        }
 
-            repository.Update(schedule);
+        private void ValidateAndPrepare(Schedule schedule)
+        {
+            if (schedule == null) throw new ArgumentNullException(nameof(schedule));
+
+            if (schedule.StartTime >= schedule.EndTime)
+                throw new ArgumentException("Время начала смены должно быть раньше времени окончания.");
+
+            if (schedule.WorkerCount <= 0)
+                throw new ArgumentException("Количество рабочих должно быть больше нуля.");
+
+            if (string.IsNullOrWhiteSpace(schedule.SupervisorFullname))
+                throw new ArgumentException("Укажите ФИО начальника смены.");
+
+            // Инкапсулируем бизнес-логику расчетов внутри сервиса
+            schedule.Duration = (int)(schedule.EndTime - schedule.StartTime).TotalHours;
+            schedule.ShiftDate = schedule.StartTime.Date;
+            schedule.SupervisorFullname = schedule.SupervisorFullname.Trim();
         }
     }
 }

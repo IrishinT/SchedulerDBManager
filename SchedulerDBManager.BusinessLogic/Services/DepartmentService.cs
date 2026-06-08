@@ -8,45 +8,58 @@ namespace SchedulerDBManager.BusinessLogic.Services
 {
     public class DepartmentService
     {
-        private readonly IDepartmentRepository repository;
+        private readonly IDepartmentRepository _deptRepo;
+        private readonly ISectionRepository _sectionRepo;
+        private readonly IScheduleRepository _scheduleRepo;
 
-        public DepartmentService(IDepartmentRepository repository)
+        // Внедряем смежные репозитории для каскадного удаления
+        public DepartmentService(IDepartmentRepository deptRepo, ISectionRepository sectionRepo, IScheduleRepository scheduleRepo)
         {
-            this.repository = repository;
+            _deptRepo = deptRepo;
+            _sectionRepo = sectionRepo;
+            _scheduleRepo = scheduleRepo;
         }
 
-        public IEnumerable<Department> GetAllDepartments()
-        {
-            return repository.GetAll();
-        }
-
-        public IEnumerable<Department> FindByName(string name)
-        {
-            if (string.IsNullOrWhiteSpace(name))
-                return GetAllDepartments();
-
-            return repository.SearchByName(name.Trim());
-        }
+        public IEnumerable<Department> GetAllDepartments() => _deptRepo.GetAll();
 
         public void CreateDepartment(Department department)
         {
-            if (string.IsNullOrWhiteSpace(department.DepartmentName))
-                throw new ArgumentException("Название подразделения не может быть пустым.");
-
-            repository.Add(department);
+            Validate(department);
+            _deptRepo.Add(department);
         }
 
         public void UpdateDepartment(Department department)
         {
-            if (string.IsNullOrWhiteSpace(department.DepartmentName))
-                throw new ArgumentException("Название подразделения не может быть пустым.");
-
-            repository.Update(department);
+            Validate(department);
+            _deptRepo.Update(department);
         }
 
         public void RemoveDepartment(int id)
         {
-            repository.Delete(id);
+            // Каскадное удаление: Отдел - Участки - Смены
+            var sections = _sectionRepo.GetAll().Where(s => s.DepartmentId == id).ToList();
+            foreach (var section in sections)
+            {
+                var schedules = _scheduleRepo.GetAll().Where(sch => sch.SectionId == section.SectionId).ToList();
+                foreach (var schedule in schedules)
+                {
+                    _scheduleRepo.Delete(schedule.ShiftId);
+                }
+                _sectionRepo.Delete(section.SectionId);
+            }
+            _deptRepo.Delete(id);
+        }
+
+        private void Validate(Department department)
+        {
+            if (department == null) throw new ArgumentNullException(nameof(department));
+            if (string.IsNullOrWhiteSpace(department.DepartmentName))
+                throw new ArgumentException("Название подразделения не может быть пустым.");
+            if (string.IsNullOrWhiteSpace(department.HeadFullName))
+                throw new ArgumentException("ФИО руководителя не может быть пустым.");
+
+            department.DepartmentName = department.DepartmentName.Trim();
+            department.HeadFullName = department.HeadFullName?.Trim();
         }
     }
 }
