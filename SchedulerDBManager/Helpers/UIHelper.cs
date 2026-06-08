@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SchedulerDBManager.DataAccess.Models;
+using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
@@ -6,6 +7,15 @@ namespace SchedulerDBManager.Presentation.Helpers
 {
     public static class UIHelper
     {
+
+        public static void ApplySecurity(User user, Button btnAdd, Button btnEdit, Button btnDelete)
+        {
+            bool hasAccess = user.CanEditData;
+
+            if (btnAdd != null) btnAdd.Enabled = hasAccess;
+            if (btnEdit != null) btnEdit.Enabled = hasAccess;
+            if (btnDelete != null) btnDelete.Enabled = hasAccess;
+        }
 
         // Проверка текстового поля на пустоту
         public static bool ValidateRequired(Control control, string fieldName)

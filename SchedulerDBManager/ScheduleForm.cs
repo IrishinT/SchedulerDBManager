@@ -1,4 +1,5 @@
-﻿using SchedulerDBManager.BusinessLogic.Services;
+﻿using Microsoft.VisualBasic.ApplicationServices;
+using SchedulerDBManager.BusinessLogic.Services;
 using SchedulerDBManager.DataAccess.Models;
 using SchedulerDBManager.Presentation.Helpers;
 using System;
@@ -25,7 +26,7 @@ namespace SchedulerDBManager.Presentation
 
         private ToolTip toolTip;
 
-        public ScheduleForm(ScheduleService service, SectionService sectionService)
+        public ScheduleForm(ScheduleService service, SectionService sectionService, DataAccess.Models.User user)
         {
             InitializeComponent();
             this.scheduleService = service;
@@ -33,6 +34,8 @@ namespace SchedulerDBManager.Presentation
 
             SetupEventHandlers();
             InitializeToolTips();
+
+            UIHelper.ApplySecurity(user, btnAdd, btnEdit, btnDelete);
         }
 
         private void SetupEventHandlers()

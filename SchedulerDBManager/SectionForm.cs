@@ -16,7 +16,7 @@ namespace SchedulerDBManager.Presentation
         private List<Department> allDepartments = new List<Department>();
         private ToolTip toolTip;
 
-        public SectionForm(SectionService sectionService, DepartmentService departmentService)
+        public SectionForm(SectionService sectionService, DepartmentService departmentService, User user)
         {
             InitializeComponent();
             this.sectionService = sectionService;
@@ -24,6 +24,8 @@ namespace SchedulerDBManager.Presentation
 
             SetupEventHandlers();
             InitializeToolTips();
+
+            UIHelper.ApplySecurity(user, btnAdd, btnEdit, btnDelete);
         }
 
         private void SetupEventHandlers()

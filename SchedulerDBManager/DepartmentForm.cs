@@ -13,13 +13,15 @@ namespace SchedulerDBManager.Presentation
         private List<Department> allDepartments = new List<Department>();
         private ToolTip toolTip;
 
-        public DepartmentForm(DepartmentService departmentService)
+        public DepartmentForm(DepartmentService departmentService, User user)
         {
             InitializeComponent();
             this.departmentService = departmentService;
 
             SetupEventHandlers();
             InitializeToolTips();
+
+            UIHelper.ApplySecurity(user, btnAdd, btnEdit, btnDelete);
         }
 
         private void SetupEventHandlers()
