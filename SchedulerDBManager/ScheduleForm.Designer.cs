@@ -32,17 +32,25 @@
             dvgSchedules = new DataGridView();
             splitContainer = new SplitContainer();
             tableLayoutPanel = new TableLayoutPanel();
-            contextMenuStrip1 = new ContextMenuStrip(components);
-            btnAdd = new Button();
-            btnEdit = new Button();
-            btnDelete = new Button();
             btnHelp = new Button();
+            btnDelete = new Button();
+            btnEdit = new Button();
+            btnAdd = new Button();
+            pnlSearch = new Panel();
+            sortLbl = new Label();
+            cmbSortBy = new ComboBox();
+            addressLbl = new Label();
+            cmbFilterAddress = new ComboBox();
+            supervisorLbl = new Label();
+            cmbFilterSupervisor = new ComboBox();
+            contextMenuStrip1 = new ContextMenuStrip(components);
             ((System.ComponentModel.ISupportInitialize)dvgSchedules).BeginInit();
             ((System.ComponentModel.ISupportInitialize)splitContainer).BeginInit();
             splitContainer.Panel1.SuspendLayout();
             splitContainer.Panel2.SuspendLayout();
             splitContainer.SuspendLayout();
             tableLayoutPanel.SuspendLayout();
+            pnlSearch.SuspendLayout();
             SuspendLayout();
             // 
             // dvgSchedules
@@ -50,10 +58,10 @@
             dvgSchedules.BackgroundColor = SystemColors.Control;
             dvgSchedules.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dvgSchedules.Dock = DockStyle.Fill;
-            dvgSchedules.Location = new Point(0, 0);
+            dvgSchedules.Location = new Point(0, 70);
             dvgSchedules.Name = "dvgSchedules";
             dvgSchedules.RowHeadersWidth = 51;
-            dvgSchedules.Size = new Size(546, 450);
+            dvgSchedules.Size = new Size(546, 380);
             dvgSchedules.TabIndex = 0;
             // 
             // splitContainer
@@ -70,6 +78,7 @@
             // splitContainer.Panel2
             // 
             splitContainer.Panel2.Controls.Add(dvgSchedules);
+            splitContainer.Panel2.Controls.Add(pnlSearch);
             splitContainer.Size = new Size(800, 450);
             splitContainer.SplitterDistance = 250;
             splitContainer.TabIndex = 1;
@@ -99,33 +108,16 @@
             tableLayoutPanel.TabIndex = 0;
             tableLayoutPanel.Paint += tableLayoutPanel_Paint;
             // 
-            // contextMenuStrip1
+            // btnHelp
             // 
-            contextMenuStrip1.ImageScalingSize = new Size(20, 20);
-            contextMenuStrip1.Name = "contextMenuStrip1";
-            contextMenuStrip1.Size = new Size(61, 4);
-            // 
-            // btnAdd
-            // 
-            btnAdd.Dock = DockStyle.Bottom;
-            btnAdd.Location = new Point(30, 53);
-            btnAdd.Margin = new Padding(30);
-            btnAdd.Name = "btnAdd";
-            btnAdd.Size = new Size(190, 29);
-            btnAdd.TabIndex = 0;
-            btnAdd.Text = "Создать смену";
-            btnAdd.UseVisualStyleBackColor = true;
-            // 
-            // btnEdit
-            // 
-            btnEdit.Dock = DockStyle.Bottom;
-            btnEdit.Location = new Point(30, 165);
-            btnEdit.Margin = new Padding(30);
-            btnEdit.Name = "btnEdit";
-            btnEdit.Size = new Size(190, 29);
-            btnEdit.TabIndex = 1;
-            btnEdit.Text = "Редактировать смену";
-            btnEdit.UseVisualStyleBackColor = true;
+            btnHelp.Dock = DockStyle.Bottom;
+            btnHelp.Location = new Point(30, 391);
+            btnHelp.Margin = new Padding(30);
+            btnHelp.Name = "btnHelp";
+            btnHelp.Size = new Size(190, 29);
+            btnHelp.TabIndex = 3;
+            btnHelp.Text = "Справка";
+            btnHelp.UseVisualStyleBackColor = true;
             // 
             // btnDelete
             // 
@@ -138,16 +130,97 @@
             btnDelete.Text = "Удалить смену";
             btnDelete.UseVisualStyleBackColor = true;
             // 
-            // btnHelp
+            // btnEdit
             // 
-            btnHelp.Dock = DockStyle.Bottom;
-            btnHelp.Location = new Point(30, 391);
-            btnHelp.Margin = new Padding(30);
-            btnHelp.Name = "btnHelp";
-            btnHelp.Size = new Size(190, 29);
-            btnHelp.TabIndex = 3;
-            btnHelp.Text = "Справка";
-            btnHelp.UseVisualStyleBackColor = true;
+            btnEdit.Dock = DockStyle.Bottom;
+            btnEdit.Location = new Point(30, 165);
+            btnEdit.Margin = new Padding(30);
+            btnEdit.Name = "btnEdit";
+            btnEdit.Size = new Size(190, 29);
+            btnEdit.TabIndex = 1;
+            btnEdit.Text = "Редактировать смену";
+            btnEdit.UseVisualStyleBackColor = true;
+            // 
+            // btnAdd
+            // 
+            btnAdd.Dock = DockStyle.Bottom;
+            btnAdd.Location = new Point(30, 53);
+            btnAdd.Margin = new Padding(30);
+            btnAdd.Name = "btnAdd";
+            btnAdd.Size = new Size(190, 29);
+            btnAdd.TabIndex = 0;
+            btnAdd.Text = "Создать смену";
+            btnAdd.UseVisualStyleBackColor = true;
+            // 
+            // pnlSearch
+            // 
+            pnlSearch.BackColor = SystemColors.ControlLight;
+            pnlSearch.Controls.Add(sortLbl);
+            pnlSearch.Controls.Add(cmbSortBy);
+            pnlSearch.Controls.Add(addressLbl);
+            pnlSearch.Controls.Add(cmbFilterAddress);
+            pnlSearch.Controls.Add(supervisorLbl);
+            pnlSearch.Controls.Add(cmbFilterSupervisor);
+            pnlSearch.Dock = DockStyle.Top;
+            pnlSearch.Location = new Point(0, 0);
+            pnlSearch.Name = "pnlSearch";
+            pnlSearch.Size = new Size(546, 70);
+            pnlSearch.TabIndex = 1;
+            // 
+            // sortLbl
+            // 
+            sortLbl.Location = new Point(335, 9);
+            sortLbl.Name = "sortLbl";
+            sortLbl.Size = new Size(140, 20);
+            sortLbl.TabIndex = 0;
+            sortLbl.Text = "Сортировка:";
+            // 
+            // cmbSortBy
+            // 
+            cmbSortBy.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbSortBy.Items.AddRange(new object[] { "По дате", "По количеству рабочих", "По длительности" });
+            cmbSortBy.Location = new Point(335, 30);
+            cmbSortBy.Name = "cmbSortBy";
+            cmbSortBy.Size = new Size(199, 28);
+            cmbSortBy.TabIndex = 1;
+            // 
+            // addressLbl
+            // 
+            addressLbl.Location = new Point(160, 8);
+            addressLbl.Name = "addressLbl";
+            addressLbl.Size = new Size(140, 20);
+            addressLbl.TabIndex = 2;
+            addressLbl.Text = "Адрес участка:";
+            // 
+            // cmbFilterAddress
+            // 
+            cmbFilterAddress.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbFilterAddress.Location = new Point(160, 30);
+            cmbFilterAddress.Name = "cmbFilterAddress";
+            cmbFilterAddress.Size = new Size(169, 28);
+            cmbFilterAddress.TabIndex = 3;
+            // 
+            // supervisorLbl
+            // 
+            supervisorLbl.Location = new Point(10, 8);
+            supervisorLbl.Name = "supervisorLbl";
+            supervisorLbl.Size = new Size(140, 20);
+            supervisorLbl.TabIndex = 4;
+            supervisorLbl.Text = "Начальник:";
+            // 
+            // cmbFilterSupervisor
+            // 
+            cmbFilterSupervisor.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbFilterSupervisor.Location = new Point(10, 30);
+            cmbFilterSupervisor.Name = "cmbFilterSupervisor";
+            cmbFilterSupervisor.Size = new Size(140, 28);
+            cmbFilterSupervisor.TabIndex = 5;
+            // 
+            // contextMenuStrip1
+            // 
+            contextMenuStrip1.ImageScalingSize = new Size(20, 20);
+            contextMenuStrip1.Name = "contextMenuStrip1";
+            contextMenuStrip1.Size = new Size(61, 4);
             // 
             // ScheduleForm
             // 
@@ -156,13 +229,14 @@
             ClientSize = new Size(800, 450);
             Controls.Add(splitContainer);
             Name = "ScheduleForm";
-            Text = "Schedule";
+            Text = "Смены";
             ((System.ComponentModel.ISupportInitialize)dvgSchedules).EndInit();
             splitContainer.Panel1.ResumeLayout(false);
             splitContainer.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)splitContainer).EndInit();
             splitContainer.ResumeLayout(false);
             tableLayoutPanel.ResumeLayout(false);
+            pnlSearch.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -176,5 +250,12 @@
         private Button btnEdit;
         private Button btnAdd;
         private Button btnHelp;
+        private Panel pnlSearch;
+        private ComboBox cmbFilterSupervisor;
+        private ComboBox cmbFilterAddress;
+        private ComboBox cmbSortBy;
+        private Label supervisorLbl;
+        private Label addressLbl;
+        private Label sortLbl;
     }
 }

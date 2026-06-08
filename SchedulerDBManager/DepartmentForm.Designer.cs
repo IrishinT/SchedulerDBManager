@@ -37,10 +37,11 @@
             btnEdit = new Button();
             btnAdd = new Button();
             pnlSearch = new Panel();
-            sortLbl = new Label();
-            cmbSortBy = new ComboBox();
+            tlpSearch = new TableLayoutPanel();
             searchLbl = new Label();
             searchField = new TextBox();
+            sortLbl = new Label();
+            cmbSortBy = new ComboBox();
             contextMenuStrip1 = new ContextMenuStrip(components);
             ((System.ComponentModel.ISupportInitialize)dgvDepartments).BeginInit();
             ((System.ComponentModel.ISupportInitialize)splitContainer).BeginInit();
@@ -49,6 +50,7 @@
             splitContainer.SuspendLayout();
             tableLayoutPanel.SuspendLayout();
             pnlSearch.SuspendLayout();
+            tlpSearch.SuspendLayout();
             SuspendLayout();
             // 
             // dgvDepartments
@@ -56,10 +58,10 @@
             dgvDepartments.BackgroundColor = SystemColors.Control;
             dgvDepartments.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvDepartments.Dock = DockStyle.Fill;
-            dgvDepartments.Location = new Point(0, 0);
+            dgvDepartments.Location = new Point(0, 70);
             dgvDepartments.Name = "dgvDepartments";
             dgvDepartments.RowHeadersWidth = 51;
-            dgvDepartments.Size = new Size(546, 450);
+            dgvDepartments.Size = new Size(546, 380);
             dgvDepartments.TabIndex = 0;
             // 
             // splitContainer
@@ -148,45 +150,41 @@
             btnAdd.Text = "Создать подразделение";
             btnAdd.UseVisualStyleBackColor = true;
             // 
-            // contextMenuStrip1
-            // 
-            contextMenuStrip1.ImageScalingSize = new Size(20, 20);
-            contextMenuStrip1.Name = "contextMenuStrip1";
-            contextMenuStrip1.Size = new Size(61, 4);
-            // 
             // pnlSearch
             // 
             pnlSearch.BackColor = SystemColors.ControlLight;
-            pnlSearch.Controls.Add(sortLbl);
-            pnlSearch.Controls.Add(cmbSortBy);
-            pnlSearch.Controls.Add(searchLbl);
-            pnlSearch.Controls.Add(searchField);
+            pnlSearch.Controls.Add(tlpSearch);
             pnlSearch.Dock = DockStyle.Top;
             pnlSearch.Location = new Point(0, 0);
             pnlSearch.Name = "pnlSearch";
             pnlSearch.Size = new Size(546, 70);
             pnlSearch.TabIndex = 1;
             // 
-            // sortLbl
+            // tlpSearch
             // 
-            sortLbl.Location = new Point(340, 10);
-            sortLbl.Name = "sortLbl";
-            sortLbl.Size = new Size(150, 20);
-            sortLbl.TabIndex = 0;
-            sortLbl.Text = "Сортировка:";
-            // 
-            // cmbSortBy
-            // 
-            cmbSortBy.DropDownStyle = ComboBoxStyle.DropDownList;
-            cmbSortBy.Items.AddRange(new object[] { "Без сортировки", "По названию", "По руководителю" });
-            cmbSortBy.Location = new Point(340, 32);
-            cmbSortBy.Name = "cmbSortBy";
-            cmbSortBy.Size = new Size(160, 28);
-            cmbSortBy.TabIndex = 1;
+            tlpSearch.ColumnCount = 2;
+            tlpSearch.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            tlpSearch.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            tlpSearch.Controls.Add(searchLbl, 0, 0);
+            tlpSearch.Controls.Add(searchField, 0, 1);
+            tlpSearch.Controls.Add(sortLbl, 1, 0);
+            tlpSearch.Controls.Add(cmbSortBy, 1, 1);
+            tlpSearch.Dock = DockStyle.Fill;
+            tlpSearch.Location = new Point(0, 0);
+            tlpSearch.Name = "tlpSearch";
+            tlpSearch.Padding = new Padding(10, 5, 10, 5);
+            tlpSearch.RowCount = 2;
+            tlpSearch.RowStyles.Add(new RowStyle(SizeType.Absolute, 22F));
+            tlpSearch.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            tlpSearch.Size = new Size(546, 70);
+            tlpSearch.TabIndex = 0;
             // 
             // searchLbl
             // 
-            searchLbl.Location = new Point(10, 10);
+            searchLbl.AutoSize = true;
+            searchLbl.Margin = new Padding(0);
+            searchLbl.Dock = DockStyle.Bottom;
+            searchLbl.Location = new Point(13, 5);
             searchLbl.Name = "searchLbl";
             searchLbl.Size = new Size(150, 20);
             searchLbl.TabIndex = 4;
@@ -194,11 +192,41 @@
             // 
             // searchField
             // 
-            searchField.Location = new Point(10, 32);
+            searchField.Dock = DockStyle.Top;
+            searchField.Margin = new Padding(0, 0, 20, 0);
+            searchField.Location = new Point(13, 30);
             searchField.Name = "searchField";
             searchField.PlaceholderText = "Введите название...";
-            searchField.Size = new Size(300, 27);
+            searchField.Size = new Size(257, 27);
             searchField.TabIndex = 5;
+            // 
+            // sortLbl
+            // 
+            sortLbl.AutoSize = true;
+            sortLbl.Dock = DockStyle.Bottom;
+            sortLbl.Margin = new Padding(0);
+            sortLbl.Location = new Point(276, 5);
+            sortLbl.Name = "sortLbl";
+            sortLbl.Size = new Size(150, 20);
+            sortLbl.TabIndex = 0;
+            sortLbl.Text = "Сортировка:";
+            // 
+            // cmbSortBy
+            // 
+            cmbSortBy.Dock = DockStyle.Top;
+            cmbSortBy.Margin = new Padding(0);
+            cmbSortBy.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbSortBy.Items.AddRange(new object[] { "Без сортировки", "По названию", "По руководителю" });
+            cmbSortBy.Location = new Point(276, 30);
+            cmbSortBy.Name = "cmbSortBy";
+            cmbSortBy.Size = new Size(160, 28);
+            cmbSortBy.TabIndex = 1;
+            // 
+            // contextMenuStrip1
+            // 
+            contextMenuStrip1.ImageScalingSize = new Size(20, 20);
+            contextMenuStrip1.Name = "contextMenuStrip1";
+            contextMenuStrip1.Size = new Size(61, 4);
             // 
             // DepartmentForm
             // 
@@ -214,6 +242,9 @@
             ((System.ComponentModel.ISupportInitialize)splitContainer).EndInit();
             splitContainer.ResumeLayout(false);
             tableLayoutPanel.ResumeLayout(false);
+            pnlSearch.ResumeLayout(false);
+            tlpSearch.ResumeLayout(false);
+            tlpSearch.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -232,5 +263,6 @@
         private ComboBox cmbSortBy;
         private Label searchLbl;
         private Label sortLbl;
+        private TableLayoutPanel tlpSearch;
     }
 }

@@ -17,6 +17,11 @@ namespace SchedulerDBManager.Presentation
         private readonly ScheduleService scheduleService;
         private readonly SectionService sectionService;
 
+        private List<Schedule> allSchedules = new List<Schedule>();
+
+        // Флаг для предотвращения рекурсии при обновлении списков
+        private bool isUpdatingFilters = false;
+
         public ScheduleForm(ScheduleService service, SectionService sectionService)
         {
             InitializeComponent();
@@ -28,6 +33,10 @@ namespace SchedulerDBManager.Presentation
             btnDelete.Click += btnDelete_Click;
             btnHelp.Click += btnHelp_Click;
 
+            cmbFilterSupervisor.SelectedIndexChanged += FilterControl_Changed;
+            cmbFilterAddress.SelectedIndexChanged += FilterControl_Changed;
+            cmbSortBy.SelectedIndexChanged += (s, e) => ApplyFilters();
+
             dvgSchedules.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dvgSchedules.MultiSelect = false;
             dvgSchedules.ReadOnly = true;
@@ -36,6 +45,7 @@ namespace SchedulerDBManager.Presentation
 
         private void Schedule_Load(object sender, EventArgs e)
         {
+            if (cmbSortBy.Items.Count > 0) cmbSortBy.SelectedIndex = 0;
             RefreshGrid();
         }
 
@@ -43,48 +53,146 @@ namespace SchedulerDBManager.Presentation
         {
             try
             {
-                var schedules = scheduleService.GetAllSchedules().ToList();
-                dvgSchedules.DataSource = null;
-                dvgSchedules.DataSource = schedules;
+                allSchedules = scheduleService.GetAllSchedules().ToList();
 
-                // Скрываем ненужные колонки: ID, section_id, shift_date
-                if (dvgSchedules.Columns.Contains("ShiftId"))
-                    dvgSchedules.Columns["ShiftId"].Visible = false;
+                // Сначала обновляем списки в комбобоксах, чтобы там были актуальные данные
+                ResetFilterSelections();
+                UpdateFilterControls();
 
-                if (dvgSchedules.Columns.Contains("SectionId"))
-                    dvgSchedules.Columns["SectionId"].Visible = false;
-
-                if (dvgSchedules.Columns.Contains("ShiftDate"))
-                    dvgSchedules.Columns["ShiftDate"].Visible = false;
-
-                // Переименовываем заголовки на русский
-                if (dvgSchedules.Columns.Contains("StartTime"))
-                    dvgSchedules.Columns["StartTime"].HeaderText = "Начало смены";
-
-                if (dvgSchedules.Columns.Contains("EndTime"))
-                    dvgSchedules.Columns["EndTime"].HeaderText = "Конец смены";
-
-                if (dvgSchedules.Columns.Contains("Duration"))
-                    dvgSchedules.Columns["Duration"].HeaderText = "Длительность (ч)";
-
-                if (dvgSchedules.Columns.Contains("WorkerCount"))
-                    dvgSchedules.Columns["WorkerCount"].HeaderText = "Рабочих";
-
-                if (dvgSchedules.Columns.Contains("SupervisorFullname"))
-                    dvgSchedules.Columns["SupervisorFullname"].HeaderText = "Начальник смены";
-
-                if (dvgSchedules.Columns.Contains("SectionAddress"))
-                    dvgSchedules.Columns["SectionAddress"].HeaderText = "Адрес участка";
-
-
-                // растянуть колонку с адресом по ширине
-                dvgSchedules.Columns["SectionAddress"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                ApplyFilters();
+                SetupColumns();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка загрузки данных: {ex.Message}",
-                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Ошибка: {ex.Message}");
             }
+        }
+
+        private void ResetFilterSelections()
+        {
+            isUpdatingFilters = true;
+
+            cmbFilterSupervisor.Items.Clear();
+            cmbFilterSupervisor.Items.Add("Все");
+            cmbFilterSupervisor.SelectedIndex = 0;
+
+            cmbFilterAddress.Items.Clear();
+            cmbFilterAddress.Items.Add("Все");
+            cmbFilterAddress.SelectedIndex = 0;
+
+            isUpdatingFilters = false;
+        }
+
+        private void FilterControl_Changed(object sender, EventArgs e)
+        {
+            if (isUpdatingFilters) return;
+
+            isUpdatingFilters = true;
+
+            // Запоминаем, что выбрал пользователь
+            string selectedSupervisor = cmbFilterSupervisor.SelectedItem?.ToString();
+            string selectedAddress = cmbFilterAddress.SelectedItem?.ToString();
+
+            // 1. Обновляем список адресов на основе выбранного начальника
+            var availableAddresses = allSchedules
+                .Where(s => selectedSupervisor == "Все" || s.SupervisorFullname == selectedSupervisor)
+                .Select(s => s.SectionAddress)
+                .Distinct().OrderBy(x => x).ToList();
+
+            cmbFilterAddress.Items.Clear();
+            cmbFilterAddress.Items.Add("Все");
+            cmbFilterAddress.Items.AddRange(availableAddresses.ToArray());
+
+            // Возвращаем выбор адреса, если он еще доступен в новом списке
+            if (cmbFilterAddress.Items.Contains(selectedAddress))
+                cmbFilterAddress.SelectedItem = selectedAddress;
+            else
+                cmbFilterAddress.SelectedIndex = 0;
+
+            // 2. Обновляем список начальников на основе выбранного адреса
+            var availableSupervisors = allSchedules
+                .Where(s => selectedAddress == "Все" || s.SectionAddress == selectedAddress)
+                .Select(s => s.SupervisorFullname)
+                .Distinct().OrderBy(x => x).ToList();
+
+            cmbFilterSupervisor.Items.Clear();
+            cmbFilterSupervisor.Items.Add("Все");
+            cmbFilterSupervisor.Items.AddRange(availableSupervisors.ToArray());
+
+            // Возвращаем выбор начальника, если он еще доступен
+            if (cmbFilterSupervisor.Items.Contains(selectedSupervisor))
+                cmbFilterSupervisor.SelectedItem = selectedSupervisor;
+            else
+                cmbFilterSupervisor.SelectedIndex = 0;
+
+            isUpdatingFilters = false;
+
+            // Применяем результат к таблице
+            ApplyFilters();
+        }
+
+        // Первичное заполнение фильтров при загрузке данных
+        private void UpdateFilterControls()
+        {
+            isUpdatingFilters = true;
+
+            var supervisors = allSchedules.Select(s => s.SupervisorFullname).Distinct().OrderBy(x => x).ToArray();
+            var addresses = allSchedules.Select(s => s.SectionAddress).Distinct().OrderBy(x => x).ToArray();
+
+            cmbFilterSupervisor.Items.Clear();
+            cmbFilterSupervisor.Items.Add("Все");
+            cmbFilterSupervisor.Items.AddRange(supervisors);
+            cmbFilterSupervisor.SelectedIndex = 0;
+
+            cmbFilterAddress.Items.Clear();
+            cmbFilterAddress.Items.Add("Все");
+            cmbFilterAddress.Items.AddRange(addresses);
+            cmbFilterAddress.SelectedIndex = 0;
+
+            isUpdatingFilters = false;
+        }
+
+        private void ApplyFilters()
+        {
+            if (allSchedules == null) return;
+
+            string selectedSupervisor = cmbFilterSupervisor.SelectedItem?.ToString();
+            string selectedAddress = cmbFilterAddress.SelectedItem?.ToString();
+
+            // Фильтруем данные
+            var filtered = allSchedules.Where(s =>
+                (selectedSupervisor == "Все" || s.SupervisorFullname == selectedSupervisor) &&
+                (selectedAddress == "Все" || s.SectionAddress == selectedAddress)
+            );
+
+            // Сортируем данные
+            string sortOption = cmbSortBy.SelectedItem?.ToString();
+            switch (sortOption)
+            {
+                case "По дате":
+                    filtered = filtered.OrderBy(s => s.StartTime);
+                    break;
+                case "По количеству рабочих":
+                    filtered = filtered.OrderByDescending(s => s.WorkerCount);
+                    break;
+                case "По длительности":
+                    filtered = filtered.OrderByDescending(s => s.Duration);
+                    break;
+            }
+
+            dvgSchedules.DataSource = filtered.ToList();
+        }
+
+        private void SetupColumns()
+        {
+            if (dvgSchedules.Columns.Count == 0) return;
+            // (Ваш существующий код скрытия ID и перевода заголовков)
+            if (dvgSchedules.Columns.Contains("ShiftId")) dvgSchedules.Columns["ShiftId"].Visible = false;
+            if (dvgSchedules.Columns.Contains("SectionId")) dvgSchedules.Columns["SectionId"].Visible = false;
+            if (dvgSchedules.Columns.Contains("ShiftDate")) dvgSchedules.Columns["ShiftDate"].Visible = false;
+
+            if (dvgSchedules.Columns.Contains("SectionAddress"))
+                dvgSchedules.Columns["SectionAddress"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
