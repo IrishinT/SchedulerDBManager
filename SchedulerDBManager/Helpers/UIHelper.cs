@@ -6,6 +6,43 @@ namespace SchedulerDBManager.Presentation.Helpers
 {
     public static class UIHelper
     {
+
+        // Проверка текстового поля на пустоту
+        public static bool ValidateRequired(Control control, string fieldName)
+        {
+            if (string.IsNullOrWhiteSpace(control.Text))
+            {
+                MessageBox.Show($"Поле '{fieldName}' обязательно для заполнения.", "Валидация", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                control.Focus();
+                return false;
+            }
+            return true;
+        }
+
+        // Проверка, что в ComboBox выбрано значение (не пустое и не -1)
+        public static bool ValidateSelection(ComboBox combo, string fieldName)
+        {
+            if (combo.SelectedValue == null || combo.SelectedIndex == -1)
+            {
+                MessageBox.Show($"Необходимо выбрать значение в поле '{fieldName}'.", "Валидация", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                combo.Focus();
+                return false;
+            }
+            return true;
+        }
+
+        // Проверка числового диапазона (например, для NumericUpDown)
+        public static bool ValidateRange(NumericUpDown control, string fieldName, decimal min, decimal max)
+        {
+            if (control.Value < min || control.Value > max)
+            {
+                MessageBox.Show($"Значение в поле '{fieldName}' должно быть в диапазоне от {min} до {max}.", "Валидация", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                control.Focus();
+                return false;
+            }
+            return true;
+        }
+
         // Выполнение действий с автоматическим перехватом ошибок (избавляет от try-catch в кнопках)
         public static void SafeExecute(Action action, string errorTitle = "Ошибка")
         {

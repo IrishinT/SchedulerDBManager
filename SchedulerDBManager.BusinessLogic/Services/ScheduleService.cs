@@ -41,6 +41,9 @@ namespace SchedulerDBManager.BusinessLogic.Services
             if (schedule.WorkerCount <= 0)
                 throw new ArgumentException("Количество рабочих должно быть больше нуля.");
 
+            if (schedule.WorkerCount > 100)
+                throw new ArgumentException("Количество рабочих должно быть больше 100.");
+
             if (string.IsNullOrWhiteSpace(schedule.SupervisorFullname))
                 throw new ArgumentException("Укажите ФИО начальника смены.");
 

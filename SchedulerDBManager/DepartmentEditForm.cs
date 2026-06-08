@@ -1,4 +1,5 @@
 ﻿using SchedulerDBManager.DataAccess.Models;
+using SchedulerDBManager.Presentation.Helpers;
 using System;
 using System.Windows.Forms;
 
@@ -46,13 +47,8 @@ namespace SchedulerDBManager.Presentation
 
         private void BtnSave_Click(object sender, EventArgs e)
         {
-            // Валидация перед сохранением
-            if (string.IsNullOrWhiteSpace(nameField.Text))
-            {
-                MessageBox.Show("Название подразделения обязательно для заполнения.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                this.DialogResult = DialogResult.None;
-                return;
-            }
+            if (!UIHelper.ValidateRequired(nameField, "Название подразделения")) { this.DialogResult = DialogResult.None; return; }
+            if (!UIHelper.ValidateRequired(headField, "ФИО руководителя")) { this.DialogResult = DialogResult.None; return; }
 
             CurrentDepartment.DepartmentName = nameField.Text.Trim();
             CurrentDepartment.HeadFullName = headField.Text.Trim();

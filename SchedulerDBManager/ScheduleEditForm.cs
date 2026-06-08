@@ -1,4 +1,5 @@
 ﻿using SchedulerDBManager.DataAccess.Models;
+using SchedulerDBManager.Presentation.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -60,6 +61,18 @@ namespace SchedulerDBManager.Presentation
 
         private void BtnSave_Click(object sender, EventArgs e)
         {
+            if (!UIHelper.ValidateRequired(supervisor, "Начальник смены")) { this.DialogResult = DialogResult.None; return; }
+            if (!UIHelper.ValidateSelection(sectionAddress, "Адрес участка")) { this.DialogResult = DialogResult.None; return; }
+            if (!UIHelper.ValidateRange(workersCount, "Количество рабочих", 1, 100)) { this.DialogResult = DialogResult.None; return; }
+
+            // Дополнительная логика (если она специфична и не ложится в хелпер)
+            if (endTimeDate.Value <= startTimeDate.Value)
+            {
+                MessageBox.Show("Дата окончания не может быть раньше или равна дате начала.", "Валидация", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                this.DialogResult = DialogResult.None;
+                return;
+            }
+
             CurrentSchedule.StartTime = startTimeDate.Value;
             CurrentSchedule.EndTime = endTimeDate.Value;
             CurrentSchedule.SupervisorFullname = supervisor.Text;

@@ -1,4 +1,5 @@
 ﻿using SchedulerDBManager.DataAccess.Models;
+using SchedulerDBManager.Presentation.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -64,13 +65,8 @@ namespace SchedulerDBManager.Presentation
 
         private void BtnSave_Click(object sender, EventArgs e)
         {
-            // Простая валидация
-            if (string.IsNullOrWhiteSpace(addressField.Text))
-            {
-                MessageBox.Show("Пожалуйста, введите адрес участка.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                this.DialogResult = DialogResult.None;
-                return;
-            }
+            if (!UIHelper.ValidateRequired(addressField, "Адрес участка")) { this.DialogResult = DialogResult.None; return; }
+            if (!UIHelper.ValidateSelection(sectionAddress, "Подразделение")) { this.DialogResult = DialogResult.None; return; }
 
             // Маппинг данных из интерфейса в модель
             CurrentSection.Address = addressField.Text.Trim();

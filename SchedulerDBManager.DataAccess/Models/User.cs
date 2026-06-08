@@ -1,16 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SchedulerDBManager.DataAccess.Models
+﻿namespace SchedulerDBManager.DataAccess.Models
 {
     public class User
     {
-        public int Id { get; set; }
+        public int UserId { get; set; }
         public string Login { get; set; }
         public string Password { get; set; }
-        public int Role { get; set; }
+        public int Role { get; set; } // 1 - Читатель, 2 - Редактор, 3 - Администратор
+
+        // Вспомогательное свойство для отображения названия роли в интерфейсе
+        public string RoleName => Role switch
+        {
+            1 => "Читатель",
+            2 => "Редактор",
+            3 => "Администратор",
+            _ => "Неизвестно"
+        };
     }
 }
