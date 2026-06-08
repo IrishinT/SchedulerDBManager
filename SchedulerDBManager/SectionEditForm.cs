@@ -13,19 +13,34 @@ namespace SchedulerDBManager.Presentation
         public SectionEditForm(IEnumerable<Department> departments, Section section = null)
         {
             InitializeComponent();
+            SetupFormBehavior();
+            BindDepartmentsCombo(departments);
+            InitializeFormData(section);
+        }
 
-            this.AcceptButton = btnSave;
-            this.CancelButton = btnCancel;
+        private void SetupFormBehavior()
+        {
             btnSave.DialogResult = DialogResult.OK;
             btnCancel.DialogResult = DialogResult.Cancel;
-
+            this.AcceptButton = btnSave;
+            this.CancelButton = btnCancel;
             btnSave.Click += BtnSave_Click;
+        }
 
-            // Настраиваем ComboBox
-            sectionAddress.DataSource = departments.ToList();
-            sectionAddress.DisplayMember = "DepartmentName"; // То, что видит пользователь
-            sectionAddress.ValueMember = "DepartmentId";     // ID, который пойдет в базу
+        private void BindDepartmentsCombo(IEnumerable<Department> departments)
+        {
+            // Используем анонимный тип для чистоты отображения, как в ScheduleEditForm
+            var displayDepts = departments
+                .Select(d => new { Id = d.DepartmentId, Name = d.DepartmentName.Trim() })
+                .ToList();
 
+            sectionAddress.DataSource = displayDepts;
+            sectionAddress.DisplayMember = "Name";
+            sectionAddress.ValueMember = "Id";
+        }
+
+        private void InitializeFormData(Section section)
+        {
             if (section == null)
             {
                 this.Text = "Добавление участка";
@@ -34,34 +49,35 @@ namespace SchedulerDBManager.Presentation
             else
             {
                 this.Text = "Редактирование участка";
+                // Создаем копию объекта (клонирование по ID)
                 CurrentSection = new Section
                 {
                     SectionId = section.SectionId,
-                    Address = section.Address,
-                    DepartmentId = section.DepartmentId,
-                    Phone = section.Phone
+                    DepartmentId = section.DepartmentId
                 };
 
-                addressField.Text = CurrentSection.Address;
-                phoneField.Text = CurrentSection.Phone;
-                sectionAddress.SelectedValue = CurrentSection.DepartmentId; // Устанавливаем выбранное подразделение
+                addressField.Text = section.Address;
+                phoneField.Text = section.Phone;
+                sectionAddress.SelectedValue = section.DepartmentId;
             }
         }
 
         private void BtnSave_Click(object sender, EventArgs e)
         {
+            // Простая валидация
+            if (string.IsNullOrWhiteSpace(addressField.Text))
+            {
+                MessageBox.Show("Пожалуйста, введите адрес участка.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                this.DialogResult = DialogResult.None;
+                return;
+            }
+
+            // Маппинг данных из интерфейса в модель
             CurrentSection.Address = addressField.Text.Trim();
             CurrentSection.Phone = phoneField.Text.Trim();
 
             if (sectionAddress.SelectedValue != null)
-            {
                 CurrentSection.DepartmentId = (int)sectionAddress.SelectedValue;
-            }
-        }
-
-        private void cmbSortBy_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
         }
     }
 }

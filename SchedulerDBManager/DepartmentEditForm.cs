@@ -11,15 +11,21 @@ namespace SchedulerDBManager.Presentation
         public DepartmentEditForm(Department department = null)
         {
             InitializeComponent();
+            SetupFormBehavior();
+            InitializeFormData(department);
+        }
 
-            // Настройка кнопок диалога
+        private void SetupFormBehavior()
+        {
             btnSave.DialogResult = DialogResult.OK;
             btnCancel.DialogResult = DialogResult.Cancel;
             this.AcceptButton = btnSave;
             this.CancelButton = btnCancel;
+            btnSave.Click += BtnSave_Click;
+        }
 
-            btnSave.Click += btnSave_Click;
-
+        private void InitializeFormData(Department department)
+        {
             if (department == null)
             {
                 this.Text = "Новое подразделение";
@@ -28,31 +34,28 @@ namespace SchedulerDBManager.Presentation
             else
             {
                 this.Text = "Свойства подразделения";
-                CurrentDepartment = new Department
-                {
-                    DepartmentId = department.DepartmentId,
-                    DepartmentName = department.DepartmentName,
-                    HeadFullName = department.HeadFullName
+                CurrentDepartment = new Department 
+                { 
+                    DepartmentId = department.DepartmentId 
                 };
 
-                // Заполнение полей (используем твои имена из дизайнера)
-                nameField.Text = CurrentDepartment.DepartmentName;
-                headField.Text = CurrentDepartment.HeadFullName;
+                nameField.Text = department.DepartmentName;
+                headField.Text = department.HeadFullName;
             }
         }
 
-        private void btnSave_Click(object sender, EventArgs e)
+        private void BtnSave_Click(object sender, EventArgs e)
         {
-            // Считываем данные из текстовых полей обратно в объект
+            // Валидация перед сохранением
+            if (string.IsNullOrWhiteSpace(nameField.Text))
+            {
+                MessageBox.Show("Название подразделения обязательно для заполнения.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                this.DialogResult = DialogResult.None;
+                return;
+            }
+
             CurrentDepartment.DepartmentName = nameField.Text.Trim();
             CurrentDepartment.HeadFullName = headField.Text.Trim();
-
-            // Базовая валидация перед закрытием
-            if (string.IsNullOrWhiteSpace(CurrentDepartment.DepartmentName))
-            {
-                MessageBox.Show("Название подразделения обязательно для заполнения.", "Валидация", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                this.DialogResult = DialogResult.None; // Не закрываем форму
-            }
         }
     }
 }

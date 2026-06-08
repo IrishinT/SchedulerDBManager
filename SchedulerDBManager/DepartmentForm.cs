@@ -1,5 +1,6 @@
 ﻿using SchedulerDBManager.BusinessLogic.Services;
 using SchedulerDBManager.DataAccess.Models;
+using SchedulerDBManager.Presentation.Helpers;
 using System;
 using System.Linq;
 using System.Windows.Forms;
@@ -16,186 +17,119 @@ namespace SchedulerDBManager.Presentation
         {
             InitializeComponent();
             this.departmentService = departmentService;
-            this.Load += DepartmentForm_Load;
 
-            // Настройка кнопок (привязка событий)
+            SetupEventHandlers();
+            InitializeToolTips();
+        }
+
+        private void SetupEventHandlers()
+        {
+            this.Load += (s, e) => { if (cmbSortBy.Items.Count > 0) cmbSortBy.SelectedIndex = 0; RefreshData(); };
             btnAdd.Click += btnAdd_Click;
             btnEdit.Click += btnEdit_Click;
             btnDelete.Click += btnDelete_Click;
             btnHelp.Click += btnHelp_Click;
 
-            // Настройка DataGridView
-            dgvDepartments.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvDepartments.MultiSelect = false;
-            dgvDepartments.ReadOnly = true;
-            dgvDepartments.AllowUserToAddRows = false;
             searchField.TextChanged += (s, e) => ApplyFilters();
             cmbSortBy.SelectedIndexChanged += (s, e) => ApplyFilters();
-
-            InitializeToolTips();
         }
 
         private void InitializeToolTips()
         {
-            toolTip = new ToolTip();
+            toolTip = new ToolTip { ShowAlways = true };
 
-            // Настройка таймингов (в миллисекундах)
-            toolTip.AutoPopDelay = 5000; // Сколько времени подсказка висит на экране
-            toolTip.InitialDelay = 500;  // Через сколько появляется при наведении
-            toolTip.ReshowDelay = 100;   // Задержка при переходе от одного элемента к другому
-            toolTip.ShowAlways = true;   // Показывать даже если форма не в фокусе
-
-            // Устанавливаем подсказки для элементов панели управления
             toolTip.SetToolTip(searchField, "Введите часть названия подразделения для мгновенного поиска");
-            toolTip.SetToolTip(cmbSortBy, "Выберите критерий для сортировки записей в таблице");
-
-            // Устанавливаем подсказки для кнопок действий
-            toolTip.SetToolTip(btnAdd, "Создать и добавить новое подразделение в базу данных");
-            toolTip.SetToolTip(btnEdit, "Изменить название или руководителя выбранного подразделения");
+            toolTip.SetToolTip(cmbSortBy, "Выберите критерий для сортировки записей");
+            toolTip.SetToolTip(btnAdd, "Создать и добавить новое подразделение");
+            toolTip.SetToolTip(btnEdit, "Изменить данные выбранного подразделения");
             toolTip.SetToolTip(btnDelete, "Безвозвратно удалить выбранное подразделение");
-            toolTip.SetToolTip(btnHelp, "Открыть руководство пользователя");
-
-            // Подсказка для самой таблицы
-            toolTip.SetToolTip(dgvDepartments, "Выберите строку кликом мыши, чтобы отредактировать или удалить запись");
+            toolTip.SetToolTip(dgvDepartments, "Выберите строку для редактирования или удаления");
         }
 
-        private void DepartmentForm_Load(object sender, EventArgs e)
+        private void RefreshData()
         {
-            if (cmbSortBy.Items.Count > 0) cmbSortBy.SelectedIndex = 0;
-            RefreshGrid();
-        }
-
-        private void RefreshGrid()
-        {
-            try
+            UIHelper.SafeExecute(() =>
             {
-                // Загружаем данные из сервиса
                 allDepartments = departmentService.GetAllDepartments().ToList();
                 ApplyFilters();
-                SetupGridColumns();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Ошибка загрузки: {ex.Message}");
-            }
+
+                UIHelper.ConfigureGrid(
+                    dgvDepartments,
+                    hideColumns: ["DepartmentId"],
+                    renameColumns: new Dictionary<string, string> {
+                        { "DepartmentName", "Название подразделения" },
+                        { "HeadFullName", "ФИО Руководителя" }
+                    },
+                    fillColumn: ["DepartmentName", "HeadFullName"]
+                );
+            }, "Ошибка загрузки данных");
         }
 
         private void ApplyFilters()
         {
             if (allDepartments == null) return;
 
-            IEnumerable<Department> filteredData = allDepartments;
+            var filtered = allDepartments.AsEnumerable();
 
-            // 1. Поиск по названию
+            // Поиск
             string searchText = searchField.Text.Trim().ToLower();
             if (!string.IsNullOrEmpty(searchText))
             {
-                filteredData = filteredData.Where(d =>
-                    d.DepartmentName != null && d.DepartmentName.ToLower().Contains(searchText));
+                filtered = filtered.Where(d => d.DepartmentName?.ToLower().Contains(searchText) == true);
             }
 
-            // 2. Сортировка (по названию или руководителю)
-            string sortOption = cmbSortBy.SelectedItem?.ToString();
-            switch (sortOption)
+            // Сортировка
+            filtered = cmbSortBy.SelectedItem?.ToString() switch
             {
-                case "По названию":
-                    filteredData = filteredData.OrderBy(d => d.DepartmentName);
-                    break;
-                case "По руководителю":
-                    filteredData = filteredData.OrderBy(d => d.HeadFullName);
-                    break;
-            }
+                "По руководителю" => filtered.OrderBy(d => d.HeadFullName),
+                _ => filtered.OrderBy(d => d.DepartmentName) // "По названию"
+            };
 
-            dgvDepartments.DataSource = filteredData.ToList();
-        }
-
-        private void SetupGridColumns()
-        {
-            if (dgvDepartments.Columns.Count == 0) return;
-
-            if (dgvDepartments.Columns.Contains("DepartmentId"))
-                dgvDepartments.Columns["DepartmentId"].Visible = false;
-
-            if (dgvDepartments.Columns.Contains("DepartmentName"))
-            {
-                dgvDepartments.Columns["DepartmentName"].HeaderText = "Название подразделения";
-                dgvDepartments.Columns["DepartmentName"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            }
-
-            if (dgvDepartments.Columns.Contains("HeadFullName"))
-            {
-                dgvDepartments.Columns["HeadFullName"].HeaderText = "ФИО Руководителя";
-                dgvDepartments.Columns["HeadFullName"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            }
+            dgvDepartments.DataSource = filtered.ToList();
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            using (var editForm = new DepartmentEditForm())
+            using var editForm = new DepartmentEditForm();
+            if (editForm.ShowDialog() == DialogResult.OK)
             {
-                if (editForm.ShowDialog() == DialogResult.OK)
+                UIHelper.SafeExecute(() =>
                 {
-                    try
-                    {
-                        departmentService.CreateDepartment(editForm.CurrentDepartment);
-                        RefreshGrid();
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.Message, "Ошибка сохранения", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                }
+                    departmentService.CreateDepartment(editForm.CurrentDepartment);
+                    RefreshData();
+                }, "Ошибка создания");
             }
         }
 
         private void btnEdit_Click(object sender, EventArgs e)
         {
-            if (dgvDepartments.SelectedRows.Count == 0)
-            {
-                MessageBox.Show("Выберите подразделение для редактирования.", "Внимание", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
+            if (dgvDepartments.SelectedRows.Count == 0) return;
 
             var selectedDept = (Department)dgvDepartments.SelectedRows[0].DataBoundItem;
+            using var editForm = new DepartmentEditForm(selectedDept);
 
-            using (var editForm = new DepartmentEditForm(selectedDept))
+            if (editForm.ShowDialog() == DialogResult.OK)
             {
-                if (editForm.ShowDialog() == DialogResult.OK)
+                UIHelper.SafeExecute(() =>
                 {
-                    try
-                    {
-                        departmentService.UpdateDepartment(editForm.CurrentDepartment);
-                        RefreshGrid();
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.Message, "Ошибка обновления", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                }
+                    departmentService.UpdateDepartment(editForm.CurrentDepartment);
+                    RefreshData();
+                }, "Ошибка обновления");
             }
         }
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
             if (dgvDepartments.SelectedRows.Count == 0) return;
-
             var selectedDept = (Department)dgvDepartments.SelectedRows[0].DataBoundItem;
 
-            var result = MessageBox.Show($"Вы уверены, что хотите удалить подразделение '{selectedDept.DepartmentName}'?\n\nВнимание: это может привести к ошибкам, если к отделу привязаны участки.",
-                "Подтверждение удаления", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-
-            if (result == DialogResult.Yes)
+            if (UIHelper.ConfirmDelete($"Подразделение: {selectedDept.DepartmentName}"))
             {
-                try
+                UIHelper.SafeExecute(() =>
                 {
                     departmentService.RemoveDepartment(selectedDept.DepartmentId);
-                    RefreshGrid();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Не удалось удалить подразделение. Возможно, оно используется в других таблицах.\n\nОшибка: {ex.Message}",
-                        "Ошибка удаления", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                    RefreshData();
+                }, "Ошибка удаления");
             }
         }
 

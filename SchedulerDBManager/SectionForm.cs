@@ -1,5 +1,6 @@
 ﻿using SchedulerDBManager.BusinessLogic.Services;
 using SchedulerDBManager.DataAccess.Models;
+using SchedulerDBManager.Presentation.Helpers;
 using System;
 using System.Linq;
 using System.Windows.Forms;
@@ -11,10 +12,8 @@ namespace SchedulerDBManager.Presentation
         private readonly SectionService sectionService;
         private readonly DepartmentService departmentService;
 
-        // Списки для хранения данных в памяти (для быстрой фильтрации)
         private List<Section> allSections = new List<Section>();
-        private List<Department> departments = new List<Department>();
-
+        private List<Department> allDepartments = new List<Department>();
         private ToolTip toolTip;
 
         public SectionForm(SectionService sectionService, DepartmentService departmentService)
@@ -22,14 +21,14 @@ namespace SchedulerDBManager.Presentation
             InitializeComponent();
             this.sectionService = sectionService;
             this.departmentService = departmentService;
-            this.Load += SectionForm_Load;
 
-            // Настройка таблицы
-            dgvSections.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvSections.MultiSelect = false;
-            dgvSections.ReadOnly = true;
-            dgvSections.AllowUserToAddRows = false;
+            SetupEventHandlers();
+            InitializeToolTips();
+        }
 
+        private void SetupEventHandlers()
+        {
+            this.Load += (s, e) => { cmbSortBy.SelectedIndex = 0; RefreshData(); };
             btnAdd.Click += btnAdd_Click;
             btnEdit.Click += btnEdit_Click;
             btnDelete.Click += btnDelete_Click;
@@ -38,210 +37,129 @@ namespace SchedulerDBManager.Presentation
             searchField.TextChanged += (s, e) => ApplyFilters();
             cmbFilterDepartment.SelectedIndexChanged += (s, e) => ApplyFilters();
             cmbSortBy.SelectedIndexChanged += (s, e) => ApplyFilters();
-
-            InitializeToolTips();
         }
 
         private void InitializeToolTips()
         {
-            toolTip = new ToolTip();
-            toolTip.AutoPopDelay = 5000;
-            toolTip.InitialDelay = 500;
-            toolTip.ReshowDelay = 100;
-            toolTip.ShowAlways = true;
-
-            // Элементы управления сверху
-            toolTip.SetToolTip(searchField, "Введите часть адреса для быстрого поиска нужного участка");
-            toolTip.SetToolTip(cmbFilterDepartment, "Выберите подразделение, чтобы увидеть только его участки");
-            toolTip.SetToolTip(cmbSortBy, "Выберите критерий для сортировки списка (По адресу или По телефону)");
-
-            // Кнопки действий
-            toolTip.SetToolTip(btnAdd, "Создать и добавить новый производственный участок");
+            toolTip = new ToolTip { ShowAlways = true };
+            toolTip.SetToolTip(searchField, "Введите часть адреса для быстрого поиска");
+            toolTip.SetToolTip(cmbFilterDepartment, "Фильтр по подразделению");
+            toolTip.SetToolTip(cmbSortBy, "Сортировка списка");
+            toolTip.SetToolTip(btnAdd, "Добавить новый производственный участок");
             toolTip.SetToolTip(btnEdit, "Изменить свойства выбранного участка");
-            toolTip.SetToolTip(btnDelete, "Удалить выбранный участок (если он не привязан к сменам)");
-            toolTip.SetToolTip(btnHelp, "Открыть руководство пользователя");
-
-            // Таблица
-            toolTip.SetToolTip(dgvSections, "Кликните на строку, чтобы выбрать участок для редактирования");
+            toolTip.SetToolTip(btnDelete, "Удалить выбранный участок");
         }
 
-        private void SectionForm_Load(object sender, EventArgs e)
+        private void RefreshData()
         {
-            LoadFilterData();
-            RefreshGrid();
-
-            // Устанавливаем начальное значение сортировки
-            if (cmbSortBy.Items.Count > 0) cmbSortBy.SelectedIndex = 0;
-        }
-
-        private void LoadFilterData()
-        {
-            try
+            UIHelper.SafeExecute(() =>
             {
-                // Получаем все подразделения для фильтра
-                departments = departmentService.GetAllDepartments().ToList();
-
-                cmbFilterDepartment.Items.Clear();
-                cmbFilterDepartment.Items.Add("Все подразделения"); // Элемент для сброса фильтра
-
-                foreach (Department dept in departments)
-                {
-                    cmbFilterDepartment.Items.Add(dept.DepartmentName);
-                }
-
-                cmbFilterDepartment.SelectedIndex = 0;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Ошибка загрузки фильтров: {ex.Message}");
-            }
-        }
-
-        private void RefreshGrid()
-        {
-            try
-            {
-                // Загружаем актуальные данные из БД в кэш
+                // Загружаем данные
                 allSections = sectionService.GetAllSections().ToList();
+                allDepartments = departmentService.GetAllDepartments().ToList();
 
-                // Применяем фильтры (этот метод обновит dgvSections.DataSource)
+                // Обновляем комбобокс фильтра
+                UpdateDepartmentFilter();
+
+                // Применяем фильтры и настраиваем таблицу
                 ApplyFilters();
 
-                // Настройка внешнего вида колонок (выполняется один раз при наличии данных)
-                SetupGridColumns();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Ошибка при обновлении данных: {ex.Message}");
-            }
+                UIHelper.ConfigureGrid(
+                    dgvSections,
+                    hideColumns: ["SectionId", "DepartmentId"],
+                    renameColumns: new Dictionary<string, string> {
+                        { "Address", "Адрес участка" },
+                        { "DepartmentName", "Подразделение" },
+                        { "Phone", "Телефон" }
+                    },
+                    fillColumn: ["Address"]
+                );
+            }, "Ошибка загрузки данных");
+        }
+
+        private void UpdateDepartmentFilter()
+        {
+            string currentSelection = cmbFilterDepartment.SelectedItem?.ToString() ?? "Все подразделения";
+
+            cmbFilterDepartment.Items.Clear();
+            cmbFilterDepartment.Items.Add("Все подразделения");
+            foreach (var dept in allDepartments)
+                cmbFilterDepartment.Items.Add(dept.DepartmentName);
+
+            cmbFilterDepartment.SelectedItem = cmbFilterDepartment.Items.Contains(currentSelection)
+                ? currentSelection
+                : "Все подразделения";
         }
 
         private void ApplyFilters()
         {
             if (allSections == null) return;
 
-            IEnumerable<Section> filteredData = allSections;
+            var filtered = allSections.AsEnumerable();
 
-            // 1. Текстовый поиск (по адресу)
-            string searchText = searchField.Text.Trim().ToLower();
-            if (!string.IsNullOrEmpty(searchText))
-            {
-                filteredData = filteredData.Where(s =>
-                    s.Address != null && s.Address.ToLower().Contains(searchText)
-                );
-            }
+            // 1. Поиск по адресу
+            string search = searchField.Text.Trim().ToLower();
+            if (!string.IsNullOrEmpty(search))
+                filtered = filtered.Where(s => s.Address != null && s.Address.ToLower().Contains(search));
 
-            // 2. Фильтрация по подразделению
-            if (cmbFilterDepartment.SelectedIndex > 0) // Если выбрано конкретное подразделение (не "Все")
+            // 2. Фильтр по отделу
+            if (cmbFilterDepartment.SelectedIndex > 0)
             {
-                string selectedDeptName = cmbFilterDepartment.SelectedItem.ToString();
-                filteredData = filteredData.Where(s => s.DepartmentName == selectedDeptName);
+                string selectedDept = cmbFilterDepartment.SelectedItem.ToString();
+                filtered = filtered.Where(s => s.DepartmentName == selectedDept);
             }
 
             // 3. Сортировка
-            string sortOption = cmbSortBy.SelectedItem?.ToString();
-            switch (sortOption)
+            filtered = cmbSortBy.SelectedItem?.ToString() switch
             {
-                case "По адресу":
-                    filteredData = filteredData.OrderBy(s => s.Address);
-                    break;
-                case "По телефону":
-                    filteredData = filteredData.OrderBy(s => s.Phone);
-                    break;
-            }
+                "По телефону" => filtered.OrderBy(s => s.Phone),
+                _ => filtered.OrderBy(s => s.Address) // "По адресу"
+            };
 
-            // Обновляем источник данных таблицы
-            dgvSections.DataSource = filteredData.ToList();
+            dgvSections.DataSource = filtered.ToList();
         }
-
-        private void SetupGridColumns()
-        {
-            if (dgvSections.Columns.Count == 0) return;
-
-            // Скрываем технические ID
-            if (dgvSections.Columns.Contains("SectionId")) dgvSections.Columns["SectionId"].Visible = false;
-            if (dgvSections.Columns.Contains("DepartmentId")) dgvSections.Columns["DepartmentId"].Visible = false;
-
-            // Переводим названия заголовков
-            if (dgvSections.Columns.Contains("Address")) dgvSections.Columns["Address"].HeaderText = "Адрес";
-            if (dgvSections.Columns.Contains("DepartmentName")) dgvSections.Columns["DepartmentName"].HeaderText = "Подразделение";
-            if (dgvSections.Columns.Contains("Phone")) dgvSections.Columns["Phone"].HeaderText = "Телефон";
-
-            // Оформление
-            if (dgvSections.Columns.Contains("Address"))
-                dgvSections.Columns["Address"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-        }
-
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            try
+            UIHelper.SafeExecute(() =>
             {
-                var departments = departmentService.GetAllDepartments();
-                using (var form = new SectionEditForm(departments))
+                using var form = new SectionEditForm(allDepartments);
+                if (form.ShowDialog() == DialogResult.OK)
                 {
-                    if (form.ShowDialog() == DialogResult.OK)
-                    {
-                        sectionService.CreateSection(form.CurrentSection);
-                        RefreshGrid();
-                    }
+                    sectionService.CreateSection(form.CurrentSection);
+                    RefreshData();
                 }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Ошибка при добавлении: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            }, "Ошибка добавления");
         }
 
         private void btnEdit_Click(object sender, EventArgs e)
         {
-            if (dgvSections.SelectedRows.Count == 0)
-            {
-                MessageBox.Show("Выберите участок для редактирования.", "Внимание", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
+            if (dgvSections.SelectedRows.Count == 0) return;
+            var selected = (Section)dgvSections.SelectedRows[0].DataBoundItem;
 
-            try
+            UIHelper.SafeExecute(() =>
             {
-                var section = (Section)dgvSections.SelectedRows[0].DataBoundItem;
-                var departments = departmentService.GetAllDepartments();
-
-                using (var form = new SectionEditForm(departments, section))
+                using var form = new SectionEditForm(allDepartments, selected);
+                if (form.ShowDialog() == DialogResult.OK)
                 {
-                    if (form.ShowDialog() == DialogResult.OK)
-                    {
-                        sectionService.UpdateSection(form.CurrentSection);
-                        RefreshGrid();
-                    }
+                    sectionService.UpdateSection(form.CurrentSection);
+                    RefreshData();
                 }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Ошибка при обновлении: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            }, "Ошибка обновления");
         }
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
             if (dgvSections.SelectedRows.Count == 0) return;
+            var selected = (Section)dgvSections.SelectedRows[0].DataBoundItem;
 
-            var section = (Section)dgvSections.SelectedRows[0].DataBoundItem;
-
-            var result = MessageBox.Show($"Вы уверены, что хотите удалить участок по адресу:\n{section.Address}?",
-                "Подтверждение удаления", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-            if (result == DialogResult.Yes)
+            if (UIHelper.ConfirmDelete($"Участок: {selected.Address}"))
             {
-                try
+                UIHelper.SafeExecute(() =>
                 {
-                    sectionService.RemoveSection(section.SectionId);
-                    RefreshGrid();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Не удалось удалить участок. Возможно, он используется в расписании смен.\n\nДетали: {ex.Message}",
-                        "Ошибка удаления", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                    sectionService.RemoveSection(selected.SectionId);
+                    RefreshData();
+                }, "Ошибка удаления");
             }
         }
 
