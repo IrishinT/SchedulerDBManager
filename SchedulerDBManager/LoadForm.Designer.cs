@@ -67,7 +67,7 @@
             Controls.Add(explorerOpenBtn);
             Controls.Add(filePathField);
             Name = "MainForm";
-            Text = "Form1";
+            Text = "Подключение к БД";
             ResumeLayout(false);
             PerformLayout();
         }

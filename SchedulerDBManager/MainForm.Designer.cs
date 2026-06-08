@@ -107,7 +107,7 @@
             ClientSize = new Size(800, 450);
             Controls.Add(tableLayoutPanel1);
             Name = "MainForm";
-            Text = "MainForm";
+            Text = "Главное меню";
             tableLayoutPanel1.ResumeLayout(false);
             ResumeLayout(false);
         }

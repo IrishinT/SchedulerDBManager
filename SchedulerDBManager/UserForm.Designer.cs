@@ -36,13 +36,13 @@
             btnDelete = new Button();
             btnEdit = new Button();
             btnAdd = new Button();
+            contextMenuStrip1 = new ContextMenuStrip(components);
             pnlSearch = new Panel();
             tlpSearch = new TableLayoutPanel();
-            searchLbl = new Label();
-            searchField = new TextBox();
             sortLbl = new Label();
             cmbSortBy = new ComboBox();
-            contextMenuStrip1 = new ContextMenuStrip(components);
+            searchLbl = new Label();
+            searchField = new TextBox();
             ((System.ComponentModel.ISupportInitialize)dgvSections).BeginInit();
             ((System.ComponentModel.ISupportInitialize)splitContainer).BeginInit();
             splitContainer.Panel1.SuspendLayout();
@@ -150,6 +150,12 @@
             btnAdd.Text = "Создать пользователя";
             btnAdd.UseVisualStyleBackColor = true;
             // 
+            // contextMenuStrip1
+            // 
+            contextMenuStrip1.ImageScalingSize = new Size(20, 20);
+            contextMenuStrip1.Name = "contextMenuStrip1";
+            contextMenuStrip1.Size = new Size(61, 4);
+            // 
             // pnlSearch
             // 
             pnlSearch.BackColor = SystemColors.ControlLight;
@@ -180,6 +186,25 @@
             tlpSearch.Size = new Size(546, 70);
             tlpSearch.TabIndex = 0;
             // 
+            // sortLbl
+            // 
+            sortLbl.Location = new Point(276, 5);
+            sortLbl.Name = "sortLbl";
+            sortLbl.Size = new Size(150, 20);
+            sortLbl.TabIndex = 0;
+            sortLbl.Text = "Сортировка:";
+            // 
+            // cmbSortBy
+            // 
+            cmbSortBy.Dock = DockStyle.Top;
+            cmbSortBy.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbSortBy.Items.AddRange(new object[] { "По логину", "По роли" });
+            cmbSortBy.Location = new Point(273, 27);
+            cmbSortBy.Margin = new Padding(0);
+            cmbSortBy.Name = "cmbSortBy";
+            cmbSortBy.Size = new Size(263, 28);
+            cmbSortBy.TabIndex = 1;
+            // 
             // searchLbl
             // 
             searchLbl.AutoSize = true;
@@ -200,31 +225,6 @@
             searchField.PlaceholderText = "Введите логин...";
             searchField.Size = new Size(253, 27);
             searchField.TabIndex = 5;
-            // 
-            // sortLbl
-            // 
-            sortLbl.Location = new Point(276, 5);
-            sortLbl.Name = "sortLbl";
-            sortLbl.Size = new Size(150, 20);
-            sortLbl.TabIndex = 0;
-            sortLbl.Text = "Сортировка:";
-            // 
-            // cmbSortBy
-            // 
-            cmbSortBy.Dock = DockStyle.Top;
-            cmbSortBy.DropDownStyle = ComboBoxStyle.DropDownList;
-            cmbSortBy.Items.AddRange(new object[] { "Без сортировки", "По адресу", "По телефону" });
-            cmbSortBy.Location = new Point(273, 27);
-            cmbSortBy.Margin = new Padding(0);
-            cmbSortBy.Name = "cmbSortBy";
-            cmbSortBy.Size = new Size(263, 28);
-            cmbSortBy.TabIndex = 1;
-            // 
-            // contextMenuStrip1
-            // 
-            contextMenuStrip1.ImageScalingSize = new Size(20, 20);
-            contextMenuStrip1.Name = "contextMenuStrip1";
-            contextMenuStrip1.Size = new Size(61, 4);
             // 
             // UserForm
             // 
@@ -258,10 +258,10 @@
         private Button btnAdd;
         private Button btnHelp;
         private Panel pnlSearch;
-        private TextBox searchField;
-        private ComboBox cmbSortBy;
-        private Label searchLbl;
-        private Label sortLbl;
         private TableLayoutPanel tlpSearch;
+        private Label searchLbl;
+        private TextBox searchField;
+        private Label sortLbl;
+        private ComboBox cmbSortBy;
     }
 }

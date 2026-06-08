@@ -1,4 +1,5 @@
 ﻿using SchedulerDBManager.BusinessLogic.Services;
+using SchedulerDBManager.DataAccess.Models;
 using System;
 using System.Windows.Forms;
 
@@ -10,15 +11,23 @@ namespace SchedulerDBManager.Presentation
         private readonly SectionService _sectionService;
         private readonly DepartmentService _departmentService;
         private readonly UserService _userService;
+        private readonly User _currentUser;
 
         // Принимаем сервисы из LoadForm
-        public MainForm(ScheduleService scheduleService, SectionService sectionService, DepartmentService departmentService, UserService userService)
+        public MainForm(ScheduleService scheduleService, 
+            SectionService sectionService, 
+            DepartmentService departmentService, 
+            UserService userService, User loggedUser)
         {
             InitializeComponent();
+
+            this.StartPosition = FormStartPosition.CenterScreen;
+
             _scheduleService = scheduleService;
             _sectionService = sectionService;
             _departmentService = departmentService;
             _userService = userService;
+            _currentUser = loggedUser;
 
             // Привязываем события кнопкам
             btnSchedule.Click += btnSchedule_Click;

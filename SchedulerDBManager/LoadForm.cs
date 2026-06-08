@@ -15,6 +15,8 @@ namespace SchedulerDBManager.Presentaton
         {
             InitializeComponent();
 
+            this.StartPosition = FormStartPosition.CenterScreen;
+
             explorerOpenBtn.Click += ExplorerOpenBtn_Click;
             connectBtn.Click += ConnectBtn_Click;
         }
@@ -72,12 +74,31 @@ namespace SchedulerDBManager.Presentaton
                 DepartmentService departmentService = new DepartmentService(departmentRepo, sectionRepo, scheduleRepo);
                 UserService userService = new UserService(userRepository);
 
-                // 5. Открываем ГЛАВНОЕ МЕНЮ и передаем туда сервисы
-                MainForm mainForm = new MainForm(scheduleService, sectionService, departmentService, userService);
-                mainForm.Show();
+                using (AuthForm authForm = new AuthForm(userService))
+                {
+                    // Скрываем форму загрузки на время авторизации
+                    this.Hide();
 
-                // Скрываем форму загрузки
-                this.Hide();
+                    if (authForm.ShowDialog() == DialogResult.OK)
+                    {
+                        // Если авторизация успешна, открываем MainForm и передаем пользователя
+                        MainForm mainForm = new MainForm(
+                            scheduleService,
+                            sectionService,
+                            departmentService,
+                            userService,
+                            authForm.AuthenticatedUser
+                        );
+
+                        mainForm.Show();
+                    }
+                    else
+                    {
+                        // Если пользователь нажал "Отмена" в окне входа, возвращаемся к выбору БД
+                        this.Show();
+                    }
+                }
+
             }
             catch (Exception ex)
             {
