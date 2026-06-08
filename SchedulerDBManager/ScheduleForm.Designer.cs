@@ -37,6 +37,7 @@
             btnEdit = new Button();
             btnAdd = new Button();
             pnlSearch = new Panel();
+            tlpSearch = new TableLayoutPanel();
             sortLbl = new Label();
             cmbSortBy = new ComboBox();
             addressLbl = new Label();
@@ -155,20 +156,40 @@
             // pnlSearch
             // 
             pnlSearch.BackColor = SystemColors.ControlLight;
-            pnlSearch.Controls.Add(sortLbl);
-            pnlSearch.Controls.Add(cmbSortBy);
-            pnlSearch.Controls.Add(addressLbl);
-            pnlSearch.Controls.Add(cmbFilterAddress);
-            pnlSearch.Controls.Add(supervisorLbl);
-            pnlSearch.Controls.Add(cmbFilterSupervisor);
+            pnlSearch.Controls.Add(tlpSearch);
             pnlSearch.Dock = DockStyle.Top;
             pnlSearch.Location = new Point(0, 0);
             pnlSearch.Name = "pnlSearch";
             pnlSearch.Size = new Size(546, 70);
             pnlSearch.TabIndex = 1;
             // 
+            // tlpSearch
+            // 
+            tlpSearch.ColumnCount = 3;
+            tlpSearch.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.33F));
+            tlpSearch.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.33F));
+            tlpSearch.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.33F));
+            tlpSearch.RowCount = 2;
+            tlpSearch.RowStyles.Add(new RowStyle(SizeType.Absolute, 22F));
+            tlpSearch.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            tlpSearch.Controls.Add(supervisorLbl, 0, 0);
+            tlpSearch.Controls.Add(cmbFilterSupervisor, 0, 1);
+            tlpSearch.Controls.Add(addressLbl, 1, 0);
+            tlpSearch.Controls.Add(cmbFilterAddress, 1, 1);
+            tlpSearch.Controls.Add(sortLbl, 2, 0);
+            tlpSearch.Controls.Add(cmbSortBy, 2, 1);
+            tlpSearch.Dock = DockStyle.Fill;
+            tlpSearch.Location = new Point(0, 0);
+            tlpSearch.Name = "tlpSearch";
+            tlpSearch.Padding = new Padding(10, 5, 10, 5);
+            tlpSearch.Size = new Size(546, 70);
+            tlpSearch.TabIndex = 0;
+            // 
             // sortLbl
             // 
+            sortLbl.AutoSize = true;
+            sortLbl.Dock = DockStyle.Bottom;
+            sortLbl.Margin = new Padding(0);
             sortLbl.Location = new Point(335, 9);
             sortLbl.Name = "sortLbl";
             sortLbl.Size = new Size(140, 20);
@@ -177,6 +198,8 @@
             // 
             // cmbSortBy
             // 
+            cmbSortBy.Dock = DockStyle.Top;
+            cmbSortBy.Margin = new Padding(0);
             cmbSortBy.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbSortBy.Items.AddRange(new object[] { "По дате", "По количеству рабочих", "По длительности" });
             cmbSortBy.Location = new Point(335, 30);
@@ -186,6 +209,9 @@
             // 
             // addressLbl
             // 
+            addressLbl.AutoSize = true;
+            addressLbl.Dock = DockStyle.Bottom;
+            addressLbl.Margin = new Padding(0);
             addressLbl.Location = new Point(160, 8);
             addressLbl.Name = "addressLbl";
             addressLbl.Size = new Size(140, 20);
@@ -194,6 +220,8 @@
             // 
             // cmbFilterAddress
             // 
+            cmbFilterAddress.Dock = DockStyle.Top;
+            cmbFilterAddress.Margin = new Padding(0, 0, 10, 0);
             cmbFilterAddress.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbFilterAddress.Location = new Point(160, 30);
             cmbFilterAddress.Name = "cmbFilterAddress";
@@ -202,6 +230,9 @@
             // 
             // supervisorLbl
             // 
+            supervisorLbl.AutoSize = true;
+            supervisorLbl.Dock = DockStyle.Bottom;
+            supervisorLbl.Margin = new Padding(0);
             supervisorLbl.Location = new Point(10, 8);
             supervisorLbl.Name = "supervisorLbl";
             supervisorLbl.Size = new Size(140, 20);
@@ -210,6 +241,8 @@
             // 
             // cmbFilterSupervisor
             // 
+            cmbFilterSupervisor.Dock = DockStyle.Top;
+            cmbFilterSupervisor.Margin = new Padding(0, 0, 10, 0);
             cmbFilterSupervisor.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbFilterSupervisor.Location = new Point(10, 30);
             cmbFilterSupervisor.Name = "cmbFilterSupervisor";
@@ -237,6 +270,8 @@
             splitContainer.ResumeLayout(false);
             tableLayoutPanel.ResumeLayout(false);
             pnlSearch.ResumeLayout(false);
+            tlpSearch.ResumeLayout(false);
+            tlpSearch.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -257,5 +292,6 @@
         private Label supervisorLbl;
         private Label addressLbl;
         private Label sortLbl;
+        private TableLayoutPanel tlpSearch;
     }
 }

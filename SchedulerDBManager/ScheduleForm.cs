@@ -22,6 +22,8 @@ namespace SchedulerDBManager.Presentation
         // Флаг для предотвращения рекурсии при обновлении списков
         private bool isUpdatingFilters = false;
 
+        private ToolTip toolTip;
+
         public ScheduleForm(ScheduleService service, SectionService sectionService)
         {
             InitializeComponent();
@@ -41,6 +43,31 @@ namespace SchedulerDBManager.Presentation
             dvgSchedules.MultiSelect = false;
             dvgSchedules.ReadOnly = true;
             dvgSchedules.AllowUserToAddRows = false;
+
+            InitializeToolTips();
+        }
+
+        private void InitializeToolTips()
+        {
+            toolTip = new ToolTip();
+            toolTip.AutoPopDelay = 5000;
+            toolTip.InitialDelay = 500;
+            toolTip.ReshowDelay = 100;
+            toolTip.ShowAlways = true;
+
+            // Элементы управления сверху
+            toolTip.SetToolTip(cmbFilterSupervisor, "Выберите начальника смены для отображения только его расписания");
+            toolTip.SetToolTip(cmbFilterAddress, "Выберите адрес производственного участка для фильтрации смен");
+            toolTip.SetToolTip(cmbSortBy, "Выберите критерий для сортировки расписания (по дате, количеству рабочих или длительности)");
+
+            // Кнопки действий
+            toolTip.SetToolTip(btnAdd, "Создать новую рабочую смену и добавить её в расписание");
+            toolTip.SetToolTip(btnEdit, "Изменить время, начальника или участок выбранной смены");
+            toolTip.SetToolTip(btnDelete, "Безвозвратно удалить выбранную смену из расписания");
+            toolTip.SetToolTip(btnHelp, "Открыть руководство по работе с расписанием");
+
+            // Таблица
+            toolTip.SetToolTip(dvgSchedules, "Кликните на строку, чтобы выбрать смену для редактирования или удаления");
         }
 
         private void Schedule_Load(object sender, EventArgs e)

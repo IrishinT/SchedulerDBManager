@@ -15,6 +15,8 @@ namespace SchedulerDBManager.Presentation
         private List<Section> allSections = new List<Section>();
         private List<Department> departments = new List<Department>();
 
+        private ToolTip toolTip;
+
         public SectionForm(SectionService sectionService, DepartmentService departmentService)
         {
             InitializeComponent();
@@ -36,6 +38,31 @@ namespace SchedulerDBManager.Presentation
             searchField.TextChanged += (s, e) => ApplyFilters();
             cmbFilterDepartment.SelectedIndexChanged += (s, e) => ApplyFilters();
             cmbSortBy.SelectedIndexChanged += (s, e) => ApplyFilters();
+
+            InitializeToolTips();
+        }
+
+        private void InitializeToolTips()
+        {
+            toolTip = new ToolTip();
+            toolTip.AutoPopDelay = 5000;
+            toolTip.InitialDelay = 500;
+            toolTip.ReshowDelay = 100;
+            toolTip.ShowAlways = true;
+
+            // Элементы управления сверху
+            toolTip.SetToolTip(searchField, "Введите часть адреса для быстрого поиска нужного участка");
+            toolTip.SetToolTip(cmbFilterDepartment, "Выберите подразделение, чтобы увидеть только его участки");
+            toolTip.SetToolTip(cmbSortBy, "Выберите критерий для сортировки списка (По адресу или По телефону)");
+
+            // Кнопки действий
+            toolTip.SetToolTip(btnAdd, "Создать и добавить новый производственный участок");
+            toolTip.SetToolTip(btnEdit, "Изменить свойства выбранного участка");
+            toolTip.SetToolTip(btnDelete, "Удалить выбранный участок (если он не привязан к сменам)");
+            toolTip.SetToolTip(btnHelp, "Открыть руководство пользователя");
+
+            // Таблица
+            toolTip.SetToolTip(dgvSections, "Кликните на строку, чтобы выбрать участок для редактирования");
         }
 
         private void SectionForm_Load(object sender, EventArgs e)

@@ -10,6 +10,7 @@ namespace SchedulerDBManager.Presentation
     {
         private readonly DepartmentService departmentService;
         private List<Department> allDepartments = new List<Department>();
+        private ToolTip toolTip;
 
         public DepartmentForm(DepartmentService departmentService)
         {
@@ -30,6 +31,32 @@ namespace SchedulerDBManager.Presentation
             dgvDepartments.AllowUserToAddRows = false;
             searchField.TextChanged += (s, e) => ApplyFilters();
             cmbSortBy.SelectedIndexChanged += (s, e) => ApplyFilters();
+
+            InitializeToolTips();
+        }
+
+        private void InitializeToolTips()
+        {
+            toolTip = new ToolTip();
+
+            // Настройка таймингов (в миллисекундах)
+            toolTip.AutoPopDelay = 5000; // Сколько времени подсказка висит на экране
+            toolTip.InitialDelay = 500;  // Через сколько появляется при наведении
+            toolTip.ReshowDelay = 100;   // Задержка при переходе от одного элемента к другому
+            toolTip.ShowAlways = true;   // Показывать даже если форма не в фокусе
+
+            // Устанавливаем подсказки для элементов панели управления
+            toolTip.SetToolTip(searchField, "Введите часть названия подразделения для мгновенного поиска");
+            toolTip.SetToolTip(cmbSortBy, "Выберите критерий для сортировки записей в таблице");
+
+            // Устанавливаем подсказки для кнопок действий
+            toolTip.SetToolTip(btnAdd, "Создать и добавить новое подразделение в базу данных");
+            toolTip.SetToolTip(btnEdit, "Изменить название или руководителя выбранного подразделения");
+            toolTip.SetToolTip(btnDelete, "Безвозвратно удалить выбранное подразделение");
+            toolTip.SetToolTip(btnHelp, "Открыть руководство пользователя");
+
+            // Подсказка для самой таблицы
+            toolTip.SetToolTip(dgvDepartments, "Выберите строку кликом мыши, чтобы отредактировать или удалить запись");
         }
 
         private void DepartmentForm_Load(object sender, EventArgs e)
@@ -90,14 +117,16 @@ namespace SchedulerDBManager.Presentation
                 dgvDepartments.Columns["DepartmentId"].Visible = false;
 
             if (dgvDepartments.Columns.Contains("DepartmentName"))
+            {
                 dgvDepartments.Columns["DepartmentName"].HeaderText = "Название подразделения";
+                dgvDepartments.Columns["DepartmentName"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            }
 
             if (dgvDepartments.Columns.Contains("HeadFullName"))
+            {
                 dgvDepartments.Columns["HeadFullName"].HeaderText = "ФИО Руководителя";
-
-            // Растягиваем колонку
-            if (dgvDepartments.Columns.Contains("DepartmentName"))
-                dgvDepartments.Columns["DepartmentName"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                dgvDepartments.Columns["HeadFullName"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            }
         }
 
         private void btnAdd_Click(object sender, EventArgs e)

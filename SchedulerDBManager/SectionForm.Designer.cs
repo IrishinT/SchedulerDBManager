@@ -37,6 +37,7 @@
             btnEdit = new Button();
             btnAdd = new Button();
             pnlSearch = new Panel();
+            tlpSearch = new TableLayoutPanel();
             sortLbl = new Label();
             cmbSortBy = new ComboBox();
             filterLbl = new Label();
@@ -51,6 +52,7 @@
             splitContainer.SuspendLayout();
             tableLayoutPanel.SuspendLayout();
             pnlSearch.SuspendLayout();
+            tlpSearch.SuspendLayout();
             SuspendLayout();
             // 
             // dgvSections
@@ -153,20 +155,40 @@
             // pnlSearch
             // 
             pnlSearch.BackColor = SystemColors.ControlLight;
-            pnlSearch.Controls.Add(sortLbl);
-            pnlSearch.Controls.Add(cmbSortBy);
-            pnlSearch.Controls.Add(filterLbl);
-            pnlSearch.Controls.Add(cmbFilterDepartment);
-            pnlSearch.Controls.Add(searchLbl);
-            pnlSearch.Controls.Add(searchField);
+            pnlSearch.Controls.Add(tlpSearch);
             pnlSearch.Dock = DockStyle.Top;
             pnlSearch.Location = new Point(0, 0);
             pnlSearch.Name = "pnlSearch";
             pnlSearch.Size = new Size(546, 70);
             pnlSearch.TabIndex = 1;
             // 
+            // tlpSearch
+            // 
+            tlpSearch.ColumnCount = 3; // 3 колонки
+            tlpSearch.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.33F));
+            tlpSearch.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.33F));
+            tlpSearch.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.33F));
+            tlpSearch.RowCount = 2;
+            tlpSearch.RowStyles.Add(new RowStyle(SizeType.Absolute, 22F));
+            tlpSearch.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            tlpSearch.Controls.Add(searchLbl, 0, 0);
+            tlpSearch.Controls.Add(searchField, 0, 1);
+            tlpSearch.Controls.Add(filterLbl, 1, 0);
+            tlpSearch.Controls.Add(cmbFilterDepartment, 1, 1);
+            tlpSearch.Controls.Add(sortLbl, 2, 0);
+            tlpSearch.Controls.Add(cmbSortBy, 2, 1);
+            tlpSearch.Dock = DockStyle.Fill;
+            tlpSearch.Location = new Point(0, 0);
+            tlpSearch.Name = "tlpSearch";
+            tlpSearch.Padding = new Padding(10, 5, 10, 5);
+            tlpSearch.Size = new Size(546, 70);
+            tlpSearch.TabIndex = 0;
+            // 
             // sortLbl
             // 
+            searchLbl.AutoSize = true;
+            searchLbl.Dock = DockStyle.Bottom;
+            searchLbl.Margin = new Padding(0);
             sortLbl.Location = new Point(340, 10);
             sortLbl.Name = "sortLbl";
             sortLbl.Size = new Size(150, 20);
@@ -175,6 +197,8 @@
             // 
             // cmbSortBy
             // 
+            cmbSortBy.Dock = DockStyle.Top;
+            cmbSortBy.Margin = new Padding(0);
             cmbSortBy.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbSortBy.Items.AddRange(new object[] { "Без сортировки", "По адресу", "По телефону" });
             cmbSortBy.Location = new Point(340, 32);
@@ -183,7 +207,10 @@
             cmbSortBy.TabIndex = 1;
             // 
             // filterLbl
-            // 
+            //
+            filterLbl.AutoSize = true;
+            filterLbl.Dock = DockStyle.Bottom;
+            filterLbl.Margin = new Padding(0);
             filterLbl.Location = new Point(170, 10);
             filterLbl.Name = "filterLbl";
             filterLbl.Size = new Size(150, 20);
@@ -192,6 +219,8 @@
             // 
             // cmbFilterDepartment
             // 
+            cmbFilterDepartment.Dock = DockStyle.Top;
+            cmbFilterDepartment.Margin = new Padding(0, 0, 10, 0);
             cmbFilterDepartment.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbFilterDepartment.Location = new Point(170, 32);
             cmbFilterDepartment.Name = "cmbFilterDepartment";
@@ -200,6 +229,9 @@
             // 
             // searchLbl
             // 
+            searchLbl.AutoSize = true;
+            searchLbl.Dock = DockStyle.Bottom;
+            searchLbl.Margin = new Padding(0);
             searchLbl.Location = new Point(10, 10);
             searchLbl.Name = "searchLbl";
             searchLbl.Size = new Size(150, 20);
@@ -208,6 +240,8 @@
             // 
             // searchField
             // 
+            searchField.Dock = DockStyle.Top;
+            searchField.Margin = new Padding(0, 0, 10, 0);
             searchField.Location = new Point(10, 32);
             searchField.Name = "searchField";
             searchField.PlaceholderText = "Введите адрес...";
@@ -236,6 +270,8 @@
             tableLayoutPanel.ResumeLayout(false);
             pnlSearch.ResumeLayout(false);
             pnlSearch.PerformLayout();
+            tlpSearch.ResumeLayout(false);
+            tlpSearch.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -256,5 +292,6 @@
         private Label searchLbl;
         private Label filterLbl;
         private Label sortLbl;
+        private TableLayoutPanel tlpSearch;
     }
 }
