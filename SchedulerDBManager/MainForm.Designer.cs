@@ -32,6 +32,7 @@
             btnSchedule = new Button();
             btnSections = new Button();
             btnDepartments = new Button();
+            btnUsers = new Button();
             tableLayoutPanel1.SuspendLayout();
             SuspendLayout();
             // 
@@ -43,6 +44,7 @@
             tableLayoutPanel1.Controls.Add(btnSchedule, 0, 1);
             tableLayoutPanel1.Controls.Add(btnSections, 1, 1);
             tableLayoutPanel1.Controls.Add(btnDepartments, 0, 2);
+            tableLayoutPanel1.Controls.Add(btnUsers, 1, 2);
             tableLayoutPanel1.Dock = DockStyle.Fill;
             tableLayoutPanel1.Location = new Point(0, 0);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -87,6 +89,17 @@
             btnDepartments.Text = "Подразделения";
             btnDepartments.UseVisualStyleBackColor = true;
             // 
+            // btnUsers
+            // 
+            btnUsers.Dock = DockStyle.Fill;
+            btnUsers.Location = new Point(435, 259);
+            btnUsers.Margin = new Padding(35);
+            btnUsers.Name = "btnUsers";
+            btnUsers.Size = new Size(330, 42);
+            btnUsers.TabIndex = 3;
+            btnUsers.Text = "Пользователи";
+            btnUsers.UseVisualStyleBackColor = true;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -105,5 +118,6 @@
         private Button btnSchedule;
         private Button btnSections;
         private Button btnDepartments;
+        private Button btnUsers;
     }
 }
