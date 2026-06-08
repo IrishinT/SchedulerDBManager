@@ -54,12 +54,12 @@ namespace SchedulerDBManager.Presentation
                 // Настройка таблицы (скрываем пароль и ID)
                 UIHelper.ConfigureGrid(
                     dgvSections, // Имя из вашего дизайнера
-                    hideColumns: new[] { "UserId", "Password", "Role" },
+                    hideColumns: ["UserId", "Password", "Role"],
                     renameColumns: new Dictionary<string, string> {
                         { "Login", "Логин" },
                         { "RoleName", "Уровень доступа" }
                     },
-                    fillColumn: new[] { "Login", "RoleName" }
+                    fillColumn: ["Login", "RoleName"]
                 );
             }, "Ошибка загрузки пользователей");
         }
