@@ -155,7 +155,6 @@
             // 
             // tlpSearch
             // 
-            tlpSearch.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 20F));
             tlpSearch.Dock = DockStyle.Fill;
             tlpSearch.Location = new Point(0, 0);
             tlpSearch.Name = "tlpSearch";

@@ -26,8 +26,7 @@ namespace SchedulerDBManager.Presentation.Helpers
                 {
                     try
                     {
-                        // new UTF8Encoding(true) добавляет BOM-метку. 
-                        // Благодаря ей русский MS Excel сразу правильно поймет кириллицу (не будет "кракозябр").
+                        // new UTF8Encoding(true) добавляет BOM-метку, благодаря ей Excel сразу правильно отобразит русские символы.
                         using (StreamWriter sw = new StreamWriter(sfd.FileName, false, new UTF8Encoding(true)))
                         {
                             // 1. Записываем заголовки столбцов
@@ -37,7 +36,7 @@ namespace SchedulerDBManager.Presentation.Helpers
                                 {
                                     sw.Write(EscapeCsvValue(dgv.Columns[i].HeaderText));
                                     if (i < dgv.Columns.Count - 1)
-                                        sw.Write(";"); // Точка с запятой - стандартный разделитель для русского Excel
+                                        sw.Write(";"); // Точка с запятой стандартный разделитель для Excel
                                 }
                             }
                             sw.WriteLine();

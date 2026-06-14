@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SchedulerDBManager.Presentation.Helpers;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -20,6 +21,31 @@ namespace SchedulerDBManager.Presentation
         public BaseTableForm()
         {
             InitializeComponent();
+
+            registerHandlers();
+        }
+
+        private void registerHandlers()
+        {
+            btnExport.Click += BtnExport_Click;
+        }
+
+        /// <summary>
+        /// Обработчик клика по кнопке экспорта.
+        /// Автоматически выгружает текущие видимые данные из dgvTable.
+        /// </summary>
+        private void BtnExport_Click(object? sender, EventArgs e)
+        {
+            // Очищаем заголовок формы от недопустимых для имени файла символов
+            string safeTitle = string.Concat(Text.Split(Path.GetInvalidFileNameChars()));
+
+            // Форматируем текущую дату и время
+            string timestamp = DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss");
+
+            // Объединяем название и временную метку
+            string defaultFileName = $"{safeTitle}_{timestamp}.csv";
+
+            ExportHelper.ExportToCSV(dgvTable, defaultFileName);
         }
 
         /// <summary>
