@@ -8,19 +8,40 @@ using System.Windows.Forms;
 
 namespace SchedulerDBManager.Presentation
 {
-    public partial class UserForm : Form
+    public partial class UserForm : BaseTableForm
     {
         private readonly UserService userService;
         private List<User> allUsers = new List<User>();
+
         private ToolTip toolTip;
+        private TextBox searchField;
+        private ComboBox cmbSortBy;
 
         public UserForm(UserService userService)
         {
             InitializeComponent();
             this.userService = userService;
 
+            SetupTableForm();
             SetupEventHandlers();
             InitializeToolTips();
+        }
+
+        private void SetupTableForm()
+        {
+            Text = "Пользователи";
+            btnAdd.Text = "Создать пользователя";
+            btnEdit.Text = "Редактировать пользователя";
+            btnDelete.Text = "Удалить пользователя";
+
+            searchField = new TextBox { PlaceholderText = "Введите логин..." };
+            cmbSortBy = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList };
+            cmbSortBy.Items.AddRange(["По логину", "По роли"]);
+
+            SetupSearchPanel(
+                ("Поиск:", searchField),
+                ("Сортировка:", cmbSortBy)
+            );
         }
 
         private void SetupEventHandlers()
@@ -53,7 +74,7 @@ namespace SchedulerDBManager.Presentation
 
                 // Настройка таблицы (скрываем пароль и ID)
                 UIHelper.ConfigureGrid(
-                    dgvSections, // Имя из вашего дизайнера
+                    dgvTable, // Имя из вашего дизайнера
                     hideColumns: ["UserId", "Password", "Role", "IsAdmin", "CanEditData"],
                     renameColumns: new Dictionary<string, string> {
                         { "Login", "Логин" },
@@ -82,7 +103,7 @@ namespace SchedulerDBManager.Presentation
                 _ => filtered.OrderBy(u => u.Login) // По умолчанию "По логину"
             };
 
-            dgvSections.DataSource = filtered.ToList();
+            dgvTable.DataSource = filtered.ToList();
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
@@ -100,8 +121,8 @@ namespace SchedulerDBManager.Presentation
 
         private void btnEdit_Click(object sender, EventArgs e)
         {
-            if (dgvSections.SelectedRows.Count == 0) return;
-            var selected = (User)dgvSections.SelectedRows[0].DataBoundItem;
+            if (dgvTable.SelectedRows.Count == 0) return;
+            var selected = (User)dgvTable.SelectedRows[0].DataBoundItem;
 
             using var form = new UserEditForm(selected);
             if (form.ShowDialog() == DialogResult.OK)
@@ -122,8 +143,8 @@ namespace SchedulerDBManager.Presentation
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            if (dgvSections.SelectedRows.Count == 0) return;
-            var selected = (User)dgvSections.SelectedRows[0].DataBoundItem;
+            if (dgvTable.SelectedRows.Count == 0) return;
+            var selected = (User)dgvTable.SelectedRows[0].DataBoundItem;
 
             if (UIHelper.ConfirmDelete($"Пользователь: {selected.Login}"))
             {

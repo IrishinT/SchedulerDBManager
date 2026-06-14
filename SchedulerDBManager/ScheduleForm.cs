@@ -14,33 +14,67 @@ using System.Windows.Forms;
 
 namespace SchedulerDBManager.Presentation
 {
-    public partial class ScheduleForm : Form
+    /// <summary>
+    /// Форма отображения и управления сменами.
+    /// </summary>
+    public partial class ScheduleForm : BaseTableForm
     {
+        // Сервисы бизнес-логики для работы с данными
         private readonly ScheduleService scheduleService;
         private readonly SectionService sectionService;
 
+        // Локальный спискок для хранения актуальных данных из базы данных
         private List<Schedule> allSchedules = new List<Schedule>();
 
         // Флаг для предотвращения рекурсии при обновлении списков
         private bool isUpdatingFilters = false;
 
         private ToolTip toolTip;
+        private ComboBox cmbFilterSupervisor;
+        private ComboBox cmbFilterAddress;
+        private ComboBox cmbSortBy;
 
-        public ScheduleForm(ScheduleService service, SectionService sectionService, DataAccess.Models.User user)
+        public ScheduleForm(ScheduleService scheduleService, SectionService sectionService, DataAccess.Models.User user)
         {
             InitializeComponent();
-            this.scheduleService = service;
+            this.scheduleService = scheduleService;
             this.sectionService = sectionService;
 
+            // Настройка унаследованного интерфейса под сущность "Смены"
+            SetupTableForm();
+
+            // Биндинг обработчиков событий
             SetupEventHandlers();
+
+
             InitializeToolTips();
 
+            // Применение прав доступа текущего пользователя для кнопок
             UIHelper.ApplySecurity(user, btnAdd, btnEdit, btnDelete);
+        }
+
+        private void SetupTableForm()
+        {
+            Text = "Смены";
+            btnAdd.Text = "Создать смену";
+            btnEdit.Text = "Редактировать смену";
+            btnDelete.Text = "Удалить смену";
+
+            cmbFilterSupervisor = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList };
+            cmbFilterAddress = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList };
+            cmbSortBy = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList };
+            cmbSortBy.Items.AddRange(["По дате", "По количеству рабочих", "По длительности"]);
+
+            SetupSearchPanel(
+                ("Начальник:", cmbFilterSupervisor),
+                ("Адрес участка:", cmbFilterAddress),
+                ("Сортировка:", cmbSortBy)
+            );
         }
 
         private void SetupEventHandlers()
         {
-            this.Load += (s, e) => { cmbSortBy.SelectedIndex = 0; RefreshData(); };
+            Load += (s, e) => { cmbSortBy.SelectedIndex = 0; RefreshData(); };
             btnAdd.Click += btnAdd_Click;
             btnEdit.Click += btnEdit_Click;
             btnDelete.Click += btnDelete_Click;
@@ -71,7 +105,7 @@ namespace SchedulerDBManager.Presentation
             toolTip.SetToolTip(btnHelp, "Открыть руководство по работе с расписанием");
 
             // Таблица
-            toolTip.SetToolTip(dvgSchedules, "Кликните на строку, чтобы выбрать смену для редактирования или удаления");
+            toolTip.SetToolTip(dgvTable, "Кликните на строку, чтобы выбрать смену для редактирования или удаления");
         }
 
         private void RefreshData()
@@ -83,7 +117,7 @@ namespace SchedulerDBManager.Presentation
                 ApplyFilters();
 
                 UIHelper.ConfigureGrid(
-                    dvgSchedules,
+                    dgvTable,
                     hideColumns: ["ShiftId", "SectionId", "ShiftDate"],
                     renameColumns: new Dictionary<string, string> {
                         { "StartTime", "Начало смены" }, { "EndTime", "Конец смены" },
@@ -109,7 +143,7 @@ namespace SchedulerDBManager.Presentation
             string selSuper = cmbFilterSupervisor.SelectedItem?.ToString() ?? "Все";
             string selAddress = cmbFilterAddress.SelectedItem?.ToString() ?? "Все";
 
-            // Выделяем получение уникальных значений в отдельные методы-хелперы LINQ
+            // Выделяем получение уникальных значений в отдельные методы LINQ
             var supervisors = allSchedules.Where(s => selAddress == "Все" || s.SectionAddress == selAddress)
                                           .Select(s => s.SupervisorFullname).Distinct().OrderBy(x => x).ToArray();
 
@@ -150,7 +184,7 @@ namespace SchedulerDBManager.Presentation
                 _ => filtered.OrderBy(s => s.StartTime) // "По дате" по умолчанию
             };
 
-            dvgSchedules.DataSource = filtered.ToList();
+            dgvTable.DataSource = filtered.ToList();
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
@@ -169,11 +203,11 @@ namespace SchedulerDBManager.Presentation
 
         private void btnEdit_Click(object sender, EventArgs e)
         {
-            if (dvgSchedules.SelectedRows.Count == 0) return;
+            if (dgvTable.SelectedRows.Count == 0) return;
 
             UIHelper.SafeExecute(() =>
             {
-                var schedule = (Schedule)dvgSchedules.SelectedRows[0].DataBoundItem;
+                var schedule = (Schedule)dgvTable.SelectedRows[0].DataBoundItem;
                 using var form = new ScheduleEditForm(sectionService.GetAllSections(), schedule);
                 if (form.ShowDialog() == DialogResult.OK)
                 {
@@ -185,8 +219,8 @@ namespace SchedulerDBManager.Presentation
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            if (dvgSchedules.SelectedRows.Count == 0) return;
-            var schedule = (Schedule)dvgSchedules.SelectedRows[0].DataBoundItem;
+            if (dgvTable.SelectedRows.Count == 0) return;
+            var schedule = (Schedule)dgvTable.SelectedRows[0].DataBoundItem;
 
             if (UIHelper.ConfirmDelete($"Смена на участке: {schedule.SectionAddress}"))
             {

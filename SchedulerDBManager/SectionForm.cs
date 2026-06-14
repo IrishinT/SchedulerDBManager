@@ -7,14 +7,23 @@ using System.Windows.Forms;
 
 namespace SchedulerDBManager.Presentation
 {
-    public partial class SectionForm : Form
+    /// <summary>
+    /// Форма отображения и управления участками.
+    /// </summary>
+    public partial class SectionForm : BaseTableForm
     {
+        // Сервисы бизнес-логики для работы с данными
         private readonly SectionService sectionService;
         private readonly DepartmentService departmentService;
 
+        // Локальные списки для хранения актуальных данных из базы данных
         private List<Section> allSections = new List<Section>();
         private List<Department> allDepartments = new List<Department>();
+
         private ToolTip toolTip;
+        private TextBox searchField;
+        private ComboBox cmbFilterDepartment;
+        private ComboBox cmbSortBy;
 
         public SectionForm(SectionService sectionService, DepartmentService departmentService, User user)
         {
@@ -22,20 +31,57 @@ namespace SchedulerDBManager.Presentation
             this.sectionService = sectionService;
             this.departmentService = departmentService;
 
+            // Настройка унаследованного интерфейса под сущность "Участки"
+            SetupTableForm();
+
+            // Биндинг обработчиков событий
             SetupEventHandlers();
+
+
             InitializeToolTips();
 
+            // Применение прав доступа текущего пользователя для кнопок
             UIHelper.ApplySecurity(user, btnAdd, btnEdit, btnDelete);
         }
 
+        /// <summary>
+        /// Конфигурация названий кнопок и инициализация панели поиска
+        /// </summary>
+        private void SetupTableForm()
+        {
+            Text = "Участки";
+            btnAdd.Text = "Создать участок";
+            btnEdit.Text = "Редактировать участок";
+            btnDelete.Text = "Удалить участок";
+
+            searchField = new TextBox { PlaceholderText = "Введите адрес..." };
+            cmbFilterDepartment = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList };
+            cmbSortBy = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList };
+            cmbSortBy.Items.AddRange(["Без сортировки", "По адресу", "По телефону"]);
+
+            // Регистрируем элементы управления в сетке базового класса
+            SetupSearchPanel(
+                ("Поиск:", searchField),
+                ("Подразделение:", cmbFilterDepartment),
+                ("Сортировка:", cmbSortBy)
+            );
+        }
+
+        /// <summary>
+        /// Подписка элементов управления на события действий пользователя
+        /// </summary>
         private void SetupEventHandlers()
         {
-            this.Load += (s, e) => { cmbSortBy.SelectedIndex = 0; RefreshData(); };
+            // При первой загрузке формы сбрасываем сортировку по умолчанию и читаем базу данных
+            Load += (s, e) => { cmbSortBy.SelectedIndex = 0; RefreshData(); };
+
+            // Подписка базовых кнопок на локальные методы CRUD
             btnAdd.Click += btnAdd_Click;
             btnEdit.Click += btnEdit_Click;
             btnDelete.Click += btnDelete_Click;
             btnHelp.Click += btnHelp_Click;
 
+            // Подписка на применение фильтров на таблице при любом изменении
             searchField.TextChanged += (s, e) => ApplyFilters();
             cmbFilterDepartment.SelectedIndexChanged += (s, e) => ApplyFilters();
             cmbSortBy.SelectedIndexChanged += (s, e) => ApplyFilters();
@@ -52,6 +98,10 @@ namespace SchedulerDBManager.Presentation
             toolTip.SetToolTip(btnDelete, "Удалить выбранный участок");
         }
 
+        /// <summary>
+        /// Метод  обновления данных на форме. Считывает данные из базы, 
+        /// обновляет элементы фильтрации и перезаполняет таблицу.
+        /// </summary>
         private void RefreshData()
         {
             UIHelper.SafeExecute(() =>
@@ -67,7 +117,7 @@ namespace SchedulerDBManager.Presentation
                 ApplyFilters();
 
                 UIHelper.ConfigureGrid(
-                    dgvSections,
+                    dgvTable,
                     hideColumns: ["SectionId", "DepartmentId"],
                     renameColumns: new Dictionary<string, string> {
                         { "Address", "Адрес участка" },
@@ -88,6 +138,7 @@ namespace SchedulerDBManager.Presentation
             foreach (var dept in allDepartments)
                 cmbFilterDepartment.Items.Add(dept.DepartmentName);
 
+            // Восстанавливаем ранее выбранный фильтр, если он всё еще существует в базе данных
             cmbFilterDepartment.SelectedItem = cmbFilterDepartment.Items.Contains(currentSelection)
                 ? currentSelection
                 : "Все подразделения";
@@ -99,26 +150,26 @@ namespace SchedulerDBManager.Presentation
 
             var filtered = allSections.AsEnumerable();
 
-            // 1. Поиск по адресу
+            // Поиск по адресу
             string search = searchField.Text.Trim().ToLower();
             if (!string.IsNullOrEmpty(search))
                 filtered = filtered.Where(s => s.Address != null && s.Address.ToLower().Contains(search));
 
-            // 2. Фильтр по отделу
+            // Фильтр по отделу
             if (cmbFilterDepartment.SelectedIndex > 0)
             {
                 string selectedDept = cmbFilterDepartment.SelectedItem.ToString();
                 filtered = filtered.Where(s => s.DepartmentName == selectedDept);
             }
 
-            // 3. Сортировка
+            // Сортировка
             filtered = cmbSortBy.SelectedItem?.ToString() switch
             {
                 "По телефону" => filtered.OrderBy(s => s.Phone),
                 _ => filtered.OrderBy(s => s.Address) // "По адресу"
             };
 
-            dgvSections.DataSource = filtered.ToList();
+            dgvTable.DataSource = filtered.ToList();
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
@@ -136,8 +187,8 @@ namespace SchedulerDBManager.Presentation
 
         private void btnEdit_Click(object sender, EventArgs e)
         {
-            if (dgvSections.SelectedRows.Count == 0) return;
-            var selected = (Section)dgvSections.SelectedRows[0].DataBoundItem;
+            if (dgvTable.SelectedRows.Count == 0) return;
+            var selected = (Section)dgvTable.SelectedRows[0].DataBoundItem;
 
             UIHelper.SafeExecute(() =>
             {
@@ -152,8 +203,8 @@ namespace SchedulerDBManager.Presentation
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            if (dgvSections.SelectedRows.Count == 0) return;
-            var selected = (Section)dgvSections.SelectedRows[0].DataBoundItem;
+            if (dgvTable.SelectedRows.Count == 0) return;
+            var selected = (Section)dgvTable.SelectedRows[0].DataBoundItem;
 
             if (UIHelper.ConfirmDelete($"Участок: {selected.Address}"))
             {

@@ -30,7 +30,7 @@ namespace SchedulerDBManager.Presentation
 
         private void BindDepartmentsCombo(IEnumerable<Department> departments)
         {
-            // Используем анонимный тип для чистоты отображения, как в ScheduleEditForm
+            // Используем анонимный тип для чистоты отображения
             var displayDepts = departments
                 .Select(d => new { Id = d.DepartmentId, Name = d.DepartmentName.Trim() })
                 .ToList();
@@ -50,7 +50,7 @@ namespace SchedulerDBManager.Presentation
             else
             {
                 this.Text = "Редактирование участка";
-                // Создаем копию объекта (клонирование по ID)
+                // Создаём копию объекта смены
                 CurrentSection = new Section
                 {
                     SectionId = section.SectionId,

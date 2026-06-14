@@ -7,26 +7,47 @@ using System.Windows.Forms;
 
 namespace SchedulerDBManager.Presentation
 {
-    public partial class DepartmentForm : Form
+    public partial class DepartmentForm : BaseTableForm
     {
         private readonly DepartmentService departmentService;
         private List<Department> allDepartments = new List<Department>();
+
         private ToolTip toolTip;
+        private TextBox searchField;
+        private ComboBox cmbSortBy;
 
         public DepartmentForm(DepartmentService departmentService, User user)
         {
             InitializeComponent();
             this.departmentService = departmentService;
 
+            SetupTableForm();
             SetupEventHandlers();
             InitializeToolTips();
 
             UIHelper.ApplySecurity(user, btnAdd, btnEdit, btnDelete);
         }
 
+        private void SetupTableForm()
+        {
+            Text = "Подразделения";
+            btnAdd.Text = "Создать подразделение";
+            btnEdit.Text = "Редактировать подразделение";
+            btnDelete.Text = "Удалить подразделение";
+
+            searchField = new TextBox { PlaceholderText = "Введите название..." };
+            cmbSortBy = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList };
+            cmbSortBy.Items.AddRange(new object[] { "Без сортировки", "По названию", "По руководителю" });
+
+            SetupSearchPanel(
+                ("Поиск:", searchField),
+                ("Сортировка:", cmbSortBy)
+            );
+        }
+
         private void SetupEventHandlers()
         {
-            this.Load += (s, e) => { if (cmbSortBy.Items.Count > 0) cmbSortBy.SelectedIndex = 0; RefreshData(); };
+            Load += (s, e) => { if (cmbSortBy.Items.Count > 0) cmbSortBy.SelectedIndex = 0; RefreshData(); };
             btnAdd.Click += btnAdd_Click;
             btnEdit.Click += btnEdit_Click;
             btnDelete.Click += btnDelete_Click;
@@ -45,7 +66,7 @@ namespace SchedulerDBManager.Presentation
             toolTip.SetToolTip(btnAdd, "Создать и добавить новое подразделение");
             toolTip.SetToolTip(btnEdit, "Изменить данные выбранного подразделения");
             toolTip.SetToolTip(btnDelete, "Безвозвратно удалить выбранное подразделение");
-            toolTip.SetToolTip(dgvDepartments, "Выберите строку для редактирования или удаления");
+            toolTip.SetToolTip(dgvTable, "Выберите строку для редактирования или удаления");
         }
 
         private void RefreshData()
@@ -56,7 +77,7 @@ namespace SchedulerDBManager.Presentation
                 ApplyFilters();
 
                 UIHelper.ConfigureGrid(
-                    dgvDepartments,
+                    dgvTable,
                     hideColumns: ["DepartmentId"],
                     renameColumns: new Dictionary<string, string> {
                         { "DepartmentName", "Название подразделения" },
@@ -87,7 +108,7 @@ namespace SchedulerDBManager.Presentation
                 _ => filtered.OrderBy(d => d.DepartmentName) // "По названию"
             };
 
-            dgvDepartments.DataSource = filtered.ToList();
+            dgvTable.DataSource = filtered.ToList();
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
@@ -105,9 +126,9 @@ namespace SchedulerDBManager.Presentation
 
         private void btnEdit_Click(object sender, EventArgs e)
         {
-            if (dgvDepartments.SelectedRows.Count == 0) return;
+            if (dgvTable.SelectedRows.Count == 0) return;
 
-            var selectedDept = (Department)dgvDepartments.SelectedRows[0].DataBoundItem;
+            var selectedDept = (Department)dgvTable.SelectedRows[0].DataBoundItem;
             using var editForm = new DepartmentEditForm(selectedDept);
 
             if (editForm.ShowDialog() == DialogResult.OK)
@@ -122,8 +143,8 @@ namespace SchedulerDBManager.Presentation
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            if (dgvDepartments.SelectedRows.Count == 0) return;
-            var selectedDept = (Department)dgvDepartments.SelectedRows[0].DataBoundItem;
+            if (dgvTable.SelectedRows.Count == 0) return;
+            var selectedDept = (Department)dgvTable.SelectedRows[0].DataBoundItem;
 
             if (UIHelper.ConfirmDelete($"Подразделение: {selectedDept.DepartmentName}"))
             {
