@@ -63,6 +63,7 @@ namespace SchedulerDBManager.Presentation
             toolTip.SetToolTip(btnAdd, "Создать новую учетную запись");
             toolTip.SetToolTip(btnEdit, "Изменить логин или роль пользователя");
             toolTip.SetToolTip(btnDelete, "Удалить пользователя из системы");
+            toolTip.SetToolTip(btnExport, "Экспортировать текущую таблицу пользователей в CSV");
         }
 
         private void RefreshData()

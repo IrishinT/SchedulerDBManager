@@ -103,6 +103,7 @@ namespace SchedulerDBManager.Presentation
             toolTip.SetToolTip(btnEdit, "Изменить время, начальника или участок выбранной смены");
             toolTip.SetToolTip(btnDelete, "Безвозвратно удалить выбранную смену из расписания");
             toolTip.SetToolTip(btnHelp, "Открыть руководство по работе с расписанием");
+            toolTip.SetToolTip(btnExport, "Экспортировать текущую таблицу смен в CSV");
 
             // Таблица
             toolTip.SetToolTip(dgvTable, "Кликните на строку, чтобы выбрать смену для редактирования или удаления");

@@ -39,6 +39,7 @@
             pnlSearch = new Panel();
             tlpSearch = new TableLayoutPanel();
             contextMenuStrip1 = new ContextMenuStrip(components);
+            btnExport = new Button();
             ((System.ComponentModel.ISupportInitialize)dgvTable).BeginInit();
             ((System.ComponentModel.ISupportInitialize)splitContainer).BeginInit();
             splitContainer.Panel1.SuspendLayout();
@@ -46,16 +47,15 @@
             splitContainer.SuspendLayout();
             tableLayoutPanel.SuspendLayout();
             pnlSearch.SuspendLayout();
-            tlpSearch.SuspendLayout();
             SuspendLayout();
             // 
-            // dgvDepartments
+            // dgvTable
             // 
             dgvTable.BackgroundColor = SystemColors.Control;
             dgvTable.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvTable.Dock = DockStyle.Fill;
             dgvTable.Location = new Point(0, 70);
-            dgvTable.Name = "dgvDepartments";
+            dgvTable.Name = "dgvTable";
             dgvTable.RowHeadersWidth = 51;
             dgvTable.Size = new Size(546, 380);
             dgvTable.TabIndex = 0;
@@ -82,6 +82,7 @@
             // 
             tableLayoutPanel.ColumnCount = 1;
             tableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            tableLayoutPanel.Controls.Add(btnExport, 0, 4);
             tableLayoutPanel.Controls.Add(btnHelp, 0, 3);
             tableLayoutPanel.Controls.Add(btnDelete, 0, 2);
             tableLayoutPanel.Controls.Add(btnEdit, 0, 1);
@@ -89,23 +90,19 @@
             tableLayoutPanel.Dock = DockStyle.Fill;
             tableLayoutPanel.Location = new Point(0, 0);
             tableLayoutPanel.Name = "tableLayoutPanel";
-            tableLayoutPanel.RowCount = 4;
-            tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
-            tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
-            tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
-            tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
-            tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-            tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-            tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-            tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-            tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
+            tableLayoutPanel.RowCount = 5;
+            tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 20F));
+            tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 20F));
+            tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 20F));
+            tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 20F));
+            tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 20F));
             tableLayoutPanel.Size = new Size(250, 450);
             tableLayoutPanel.TabIndex = 0;
             // 
             // btnHelp
             // 
             btnHelp.Dock = DockStyle.Bottom;
-            btnHelp.Location = new Point(30, 391);
+            btnHelp.Location = new Point(30, 301);
             btnHelp.Margin = new Padding(30);
             btnHelp.Name = "btnHelp";
             btnHelp.Size = new Size(190, 29);
@@ -116,7 +113,7 @@
             // btnDelete
             // 
             btnDelete.Dock = DockStyle.Bottom;
-            btnDelete.Location = new Point(30, 277);
+            btnDelete.Location = new Point(30, 211);
             btnDelete.Margin = new Padding(30);
             btnDelete.Name = "btnDelete";
             btnDelete.Size = new Size(190, 29);
@@ -127,7 +124,7 @@
             // btnEdit
             // 
             btnEdit.Dock = DockStyle.Bottom;
-            btnEdit.Location = new Point(30, 165);
+            btnEdit.Location = new Point(30, 121);
             btnEdit.Margin = new Padding(30);
             btnEdit.Name = "btnEdit";
             btnEdit.Size = new Size(190, 29);
@@ -138,7 +135,7 @@
             // btnAdd
             // 
             btnAdd.Dock = DockStyle.Bottom;
-            btnAdd.Location = new Point(30, 53);
+            btnAdd.Location = new Point(30, 31);
             btnAdd.Margin = new Padding(30);
             btnAdd.Name = "btnAdd";
             btnAdd.Size = new Size(190, 29);
@@ -158,6 +155,7 @@
             // 
             // tlpSearch
             // 
+            tlpSearch.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 20F));
             tlpSearch.Dock = DockStyle.Fill;
             tlpSearch.Location = new Point(0, 0);
             tlpSearch.Name = "tlpSearch";
@@ -174,7 +172,18 @@
             contextMenuStrip1.Name = "contextMenuStrip1";
             contextMenuStrip1.Size = new Size(61, 4);
             // 
-            // DepartmentForm
+            // btnExport
+            // 
+            btnExport.Dock = DockStyle.Bottom;
+            btnExport.Location = new Point(30, 391);
+            btnExport.Margin = new Padding(30);
+            btnExport.Name = "btnExport";
+            btnExport.Size = new Size(190, 29);
+            btnExport.TabIndex = 4;
+            btnExport.Text = "Экспорт в CSV";
+            btnExport.UseVisualStyleBackColor = true;
+            // 
+            // BaseTableForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -189,8 +198,6 @@
             splitContainer.ResumeLayout(false);
             tableLayoutPanel.ResumeLayout(false);
             pnlSearch.ResumeLayout(false);
-            tlpSearch.ResumeLayout(false);
-            tlpSearch.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -206,5 +213,6 @@
         protected Button btnHelp;
         protected Panel pnlSearch;
         protected TableLayoutPanel tlpSearch;
+        protected Button btnExport;
     }
 }

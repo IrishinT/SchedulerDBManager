@@ -96,6 +96,7 @@ namespace SchedulerDBManager.Presentation
             toolTip.SetToolTip(btnAdd, "Добавить новый производственный участок");
             toolTip.SetToolTip(btnEdit, "Изменить свойства выбранного участка");
             toolTip.SetToolTip(btnDelete, "Удалить выбранный участок");
+            toolTip.SetToolTip(btnExport, "Экспортировать текущую таблицу участков в CSV");
         }
 
         /// <summary>

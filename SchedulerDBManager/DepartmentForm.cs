@@ -67,6 +67,7 @@ namespace SchedulerDBManager.Presentation
             toolTip.SetToolTip(btnEdit, "Изменить данные выбранного подразделения");
             toolTip.SetToolTip(btnDelete, "Безвозвратно удалить выбранное подразделение");
             toolTip.SetToolTip(dgvTable, "Выберите строку для редактирования или удаления");
+            toolTip.SetToolTip(btnExport, "Экспортировать текущую таблицу подразделений в CSV");
         }
 
         private void RefreshData()
