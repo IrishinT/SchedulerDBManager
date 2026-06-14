@@ -32,6 +32,7 @@
             dgvTable = new DataGridView();
             splitContainer = new SplitContainer();
             tableLayoutPanel = new TableLayoutPanel();
+            btnExport = new Button();
             btnHelp = new Button();
             btnDelete = new Button();
             btnEdit = new Button();
@@ -39,7 +40,6 @@
             pnlSearch = new Panel();
             tlpSearch = new TableLayoutPanel();
             contextMenuStrip1 = new ContextMenuStrip(components);
-            btnExport = new Button();
             ((System.ComponentModel.ISupportInitialize)dgvTable).BeginInit();
             ((System.ComponentModel.ISupportInitialize)splitContainer).BeginInit();
             splitContainer.Panel1.SuspendLayout();
@@ -51,7 +51,7 @@
             // 
             // dgvTable
             // 
-            dgvTable.BackgroundColor = SystemColors.Control;
+            dgvTable.BackgroundColor = Color.Snow;
             dgvTable.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvTable.Dock = DockStyle.Fill;
             dgvTable.Location = new Point(0, 70);
@@ -99,49 +99,85 @@
             tableLayoutPanel.Size = new Size(250, 450);
             tableLayoutPanel.TabIndex = 0;
             // 
+            // btnExport
+            // 
+            btnExport.BackColor = Color.Snow;
+            btnExport.Dock = DockStyle.Bottom;
+            btnExport.FlatStyle = FlatStyle.Flat;
+            btnExport.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 204);
+            btnExport.Location = new Point(30, 401);
+            btnExport.Margin = new Padding(30, 20, 30, 20);
+            btnExport.Name = "btnExport";
+            btnExport.Size = new Size(190, 29);
+            btnExport.TabIndex = 4;
+            btnExport.Text = "Экспорт в CSV";
+            btnExport.UseVisualStyleBackColor = false;
+            // 
             // btnHelp
             // 
+            btnHelp.BackColor = Color.Snow;
             btnHelp.Dock = DockStyle.Bottom;
-            btnHelp.Location = new Point(30, 301);
-            btnHelp.Margin = new Padding(30);
+            btnHelp.FlatStyle = FlatStyle.Flat;
+            btnHelp.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 204);
+            btnHelp.Location = new Point(30, 311);
+            btnHelp.Margin = new Padding(30, 20, 30, 20);
             btnHelp.Name = "btnHelp";
             btnHelp.Size = new Size(190, 29);
             btnHelp.TabIndex = 3;
             btnHelp.Text = "Справка";
-            btnHelp.UseVisualStyleBackColor = true;
+            btnHelp.UseVisualStyleBackColor = false;
             // 
             // btnDelete
             // 
+            btnDelete.BackColor = Color.PaleVioletRed;
             btnDelete.Dock = DockStyle.Bottom;
-            btnDelete.Location = new Point(30, 211);
-            btnDelete.Margin = new Padding(30);
+            btnDelete.FlatAppearance.BorderColor = Color.White;
+            btnDelete.FlatStyle = FlatStyle.Flat;
+            btnDelete.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 204);
+            btnDelete.ForeColor = Color.White;
+            btnDelete.Location = new Point(30, 221);
+            btnDelete.Margin = new Padding(30, 20, 30, 20);
             btnDelete.Name = "btnDelete";
             btnDelete.Size = new Size(190, 29);
             btnDelete.TabIndex = 2;
             btnDelete.Text = "Удалить";
-            btnDelete.UseVisualStyleBackColor = true;
+            btnDelete.UseVisualStyleBackColor = false;
             // 
             // btnEdit
             // 
+            btnEdit.BackColor = Color.DodgerBlue;
             btnEdit.Dock = DockStyle.Bottom;
-            btnEdit.Location = new Point(30, 121);
-            btnEdit.Margin = new Padding(30);
+            btnEdit.FlatAppearance.BorderColor = Color.White;
+            btnEdit.FlatAppearance.MouseDownBackColor = Color.CornflowerBlue;
+            btnEdit.FlatAppearance.MouseOverBackColor = Color.CornflowerBlue;
+            btnEdit.FlatStyle = FlatStyle.Flat;
+            btnEdit.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 204);
+            btnEdit.ForeColor = Color.White;
+            btnEdit.Location = new Point(30, 131);
+            btnEdit.Margin = new Padding(30, 20, 30, 20);
             btnEdit.Name = "btnEdit";
             btnEdit.Size = new Size(190, 29);
             btnEdit.TabIndex = 1;
             btnEdit.Text = "Редактировать";
-            btnEdit.UseVisualStyleBackColor = true;
+            btnEdit.UseVisualStyleBackColor = false;
             // 
             // btnAdd
             // 
+            btnAdd.BackColor = Color.DodgerBlue;
             btnAdd.Dock = DockStyle.Bottom;
-            btnAdd.Location = new Point(30, 31);
-            btnAdd.Margin = new Padding(30);
+            btnAdd.FlatAppearance.BorderColor = Color.White;
+            btnAdd.FlatAppearance.MouseDownBackColor = Color.CornflowerBlue;
+            btnAdd.FlatAppearance.MouseOverBackColor = Color.CornflowerBlue;
+            btnAdd.FlatStyle = FlatStyle.Flat;
+            btnAdd.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 204);
+            btnAdd.ForeColor = Color.White;
+            btnAdd.Location = new Point(30, 41);
+            btnAdd.Margin = new Padding(30, 20, 30, 20);
             btnAdd.Name = "btnAdd";
             btnAdd.Size = new Size(190, 29);
             btnAdd.TabIndex = 0;
             btnAdd.Text = "Создать";
-            btnAdd.UseVisualStyleBackColor = true;
+            btnAdd.UseVisualStyleBackColor = false;
             // 
             // pnlSearch
             // 
@@ -155,6 +191,7 @@
             // 
             // tlpSearch
             // 
+            tlpSearch.BackColor = Color.GhostWhite;
             tlpSearch.Dock = DockStyle.Fill;
             tlpSearch.Location = new Point(0, 0);
             tlpSearch.Name = "tlpSearch";
@@ -171,21 +208,11 @@
             contextMenuStrip1.Name = "contextMenuStrip1";
             contextMenuStrip1.Size = new Size(61, 4);
             // 
-            // btnExport
-            // 
-            btnExport.Dock = DockStyle.Bottom;
-            btnExport.Location = new Point(30, 391);
-            btnExport.Margin = new Padding(30);
-            btnExport.Name = "btnExport";
-            btnExport.Size = new Size(190, 29);
-            btnExport.TabIndex = 4;
-            btnExport.Text = "Экспорт в CSV";
-            btnExport.UseVisualStyleBackColor = true;
-            // 
             // BaseTableForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.GhostWhite;
             ClientSize = new Size(800, 450);
             Controls.Add(splitContainer);
             Name = "BaseTableForm";

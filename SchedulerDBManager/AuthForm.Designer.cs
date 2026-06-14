@@ -63,8 +63,8 @@
             // tableLayoutPanel1
             // 
             tableLayoutPanel1.ColumnCount = 2;
-            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
-            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 40F));
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 60F));
             tableLayoutPanel1.Controls.Add(passField, 1, 1);
             tableLayoutPanel1.Controls.Add(passLbl, 0, 1);
             tableLayoutPanel1.Controls.Add(loginLbl, 0, 0);
@@ -80,12 +80,13 @@
             // 
             // passField
             // 
+            passField.BackColor = Color.White;
             passField.Dock = DockStyle.Bottom;
-            passField.Location = new Point(435, 204);
-            passField.Margin = new Padding(35);
+            passField.Location = new Point(355, 204);
+            passField.Margin = new Padding(35, 35, 100, 35);
             passField.Name = "passField";
             passField.PlaceholderText = "Введите пароль";
-            passField.Size = new Size(330, 27);
+            passField.Size = new Size(345, 27);
             passField.TabIndex = 3;
             passField.UseSystemPasswordChar = true;
             // 
@@ -96,7 +97,7 @@
             passLbl.Location = new Point(35, 211);
             passLbl.Margin = new Padding(35);
             passLbl.Name = "passLbl";
-            passLbl.Size = new Size(330, 20);
+            passLbl.Size = new Size(250, 20);
             passLbl.TabIndex = 2;
             passLbl.Text = "Пароль:";
             passLbl.TextAlign = ContentAlignment.TopRight;
@@ -108,42 +109,51 @@
             loginLbl.Location = new Point(35, 78);
             loginLbl.Margin = new Padding(35);
             loginLbl.Name = "loginLbl";
-            loginLbl.Size = new Size(330, 20);
+            loginLbl.Size = new Size(250, 20);
             loginLbl.TabIndex = 0;
             loginLbl.Text = "Логин:";
             loginLbl.TextAlign = ContentAlignment.TopRight;
             // 
             // loginField
             // 
+            loginField.BackColor = Color.White;
             loginField.Dock = DockStyle.Bottom;
-            loginField.Location = new Point(435, 71);
-            loginField.Margin = new Padding(35);
+            loginField.Location = new Point(355, 71);
+            loginField.Margin = new Padding(35, 35, 100, 35);
             loginField.Name = "loginField";
             loginField.PlaceholderText = "Введите логин";
-            loginField.Size = new Size(330, 27);
+            loginField.Size = new Size(345, 27);
             loginField.TabIndex = 1;
             // 
             // btnAuth
             // 
-            btnAuth.Anchor = System.Windows.Forms.AnchorStyles.None;
-            btnAuth.Location = new Point(319, 52);
+            btnAuth.Anchor = AnchorStyles.None;
+            btnAuth.BackColor = Color.DodgerBlue;
+            btnAuth.FlatAppearance.BorderColor = Color.White;
+            btnAuth.FlatAppearance.MouseDownBackColor = Color.CornflowerBlue;
+            btnAuth.FlatAppearance.MouseOverBackColor = Color.CornflowerBlue;
+            btnAuth.FlatStyle = FlatStyle.Flat;
+            btnAuth.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold, GraphicsUnit.Point, 204);
+            btnAuth.ForeColor = Color.White;
+            btnAuth.Location = new Point(324, 20);
             btnAuth.Margin = new Padding(20);
             btnAuth.Name = "btnAuth";
             btnAuth.Size = new Size(151, 54);
             btnAuth.TabIndex = 0;
             btnAuth.Text = "Войти";
-            btnAuth.UseVisualStyleBackColor = true;
+            btnAuth.UseVisualStyleBackColor = false;
             // 
             // AuthForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.GhostWhite;
             ClientSize = new Size(800, 450);
             Controls.Add(splitContainer1);
+            FormBorderStyle = FormBorderStyle.FixedDialog;
+            MaximizeBox = false;
             Name = "AuthForm";
             Text = "Авторизация";
-            MaximizeBox = false;
-            FormBorderStyle = FormBorderStyle.FixedDialog;
             splitContainer1.Panel1.ResumeLayout(false);
             splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();

@@ -69,9 +69,11 @@
             // 
             passField.Dock = DockStyle.Bottom;
             passField.Location = new Point(403, 194);
+            passField.Margin = new Padding(3, 3, 30, 3);
+            passField.MaximumSize = new Size(300, 0);
             passField.Name = "passField";
-            passField.PlaceholderText = "Введите пароль пользователя";
-            passField.Size = new Size(394, 27);
+            passField.PlaceholderText = "Введите новый пароль пользователя";
+            passField.Size = new Size(300, 27);
             passField.TabIndex = 13;
             passField.UseSystemPasswordChar = true;
             // 
@@ -80,75 +82,96 @@
             loginLbl.AutoSize = true;
             loginLbl.Dock = DockStyle.Bottom;
             loginLbl.Location = new Point(3, 92);
+            loginLbl.Margin = new Padding(3, 0, 10, 0);
             loginLbl.Name = "loginLbl";
-            loginLbl.Size = new Size(394, 20);
+            loginLbl.Size = new Size(387, 20);
             loginLbl.TabIndex = 0;
             loginLbl.Text = "Логин:";
+            loginLbl.TextAlign = ContentAlignment.TopRight;
             // 
             // passLbl
             // 
             passLbl.AutoSize = true;
             passLbl.Dock = DockStyle.Bottom;
             passLbl.Location = new Point(3, 204);
+            passLbl.Margin = new Padding(3, 0, 10, 0);
             passLbl.Name = "passLbl";
-            passLbl.Size = new Size(394, 20);
+            passLbl.Size = new Size(387, 20);
             passLbl.TabIndex = 1;
             passLbl.Text = "Пароль:";
+            passLbl.TextAlign = ContentAlignment.TopRight;
             // 
             // roleLbl
             // 
             roleLbl.AutoSize = true;
             roleLbl.Dock = DockStyle.Bottom;
             roleLbl.Location = new Point(3, 316);
+            roleLbl.Margin = new Padding(3, 0, 10, 0);
             roleLbl.Name = "roleLbl";
-            roleLbl.Size = new Size(394, 20);
+            roleLbl.Size = new Size(387, 20);
             roleLbl.TabIndex = 4;
             roleLbl.Text = "Роль:";
+            roleLbl.TextAlign = ContentAlignment.TopRight;
             // 
             // btnCancel
             // 
+            btnCancel.BackColor = Color.PaleVioletRed;
             btnCancel.Dock = DockStyle.Bottom;
+            btnCancel.FlatAppearance.BorderColor = Color.Black;
+            btnCancel.FlatStyle = FlatStyle.Flat;
+            btnCancel.Font = new Font("Segoe UI Semibold", 10.8F, FontStyle.Bold, GraphicsUnit.Point, 204);
+            btnCancel.ForeColor = Color.White;
             btnCancel.Location = new Point(40, 387);
             btnCancel.Margin = new Padding(40, 10, 40, 10);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new Size(320, 53);
             btnCancel.TabIndex = 5;
             btnCancel.Text = "Отмена";
-            btnCancel.UseVisualStyleBackColor = true;
+            btnCancel.UseVisualStyleBackColor = false;
             // 
             // btnSave
             // 
+            btnSave.BackColor = Color.DodgerBlue;
             btnSave.Dock = DockStyle.Bottom;
+            btnSave.FlatAppearance.BorderColor = Color.Black;
+            btnSave.FlatStyle = FlatStyle.Flat;
+            btnSave.Font = new Font("Segoe UI Semibold", 10.8F, FontStyle.Bold, GraphicsUnit.Point, 204);
+            btnSave.ForeColor = Color.White;
             btnSave.Location = new Point(440, 387);
             btnSave.Margin = new Padding(40, 10, 40, 10);
             btnSave.Name = "btnSave";
             btnSave.Size = new Size(320, 53);
             btnSave.TabIndex = 6;
             btnSave.Text = "Сохранить";
-            btnSave.UseVisualStyleBackColor = true;
+            btnSave.UseVisualStyleBackColor = false;
             // 
             // roleField
             // 
             roleField.Dock = DockStyle.Bottom;
             roleField.FormattingEnabled = true;
             roleField.Location = new Point(403, 305);
+            roleField.Margin = new Padding(3, 3, 30, 3);
+            roleField.MaximumSize = new Size(300, 0);
             roleField.Name = "roleField";
-            roleField.Size = new Size(394, 28);
+            roleField.Size = new Size(300, 28);
             roleField.TabIndex = 11;
             // 
             // loginField
             // 
             loginField.Dock = DockStyle.Bottom;
             loginField.Location = new Point(403, 82);
+            loginField.Margin = new Padding(3, 3, 30, 3);
+            loginField.MaximumSize = new Size(300, 0);
             loginField.Name = "loginField";
-            loginField.PlaceholderText = "Введите логин пользователя";
-            loginField.Size = new Size(394, 27);
+            loginField.PlaceholderText = "admin";
+            loginField.Size = new Size(300, 27);
             loginField.TabIndex = 12;
             // 
             // UserEditForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.GhostWhite;
             ClientSize = new Size(800, 450);
             Controls.Add(tableLayout);
             Name = "UserEditForm";

@@ -58,52 +58,81 @@
             // 
             // btnSchedule
             // 
+            btnSchedule.BackColor = Color.DodgerBlue;
             btnSchedule.Dock = DockStyle.Fill;
+            btnSchedule.FlatAppearance.BorderColor = Color.White;
+            btnSchedule.FlatAppearance.MouseDownBackColor = Color.CornflowerBlue;
+            btnSchedule.FlatAppearance.MouseOverBackColor = Color.CornflowerBlue;
+            btnSchedule.FlatStyle = FlatStyle.Flat;
+            btnSchedule.Font = new Font("Segoe UI Semibold", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 204);
+            btnSchedule.ForeColor = Color.White;
             btnSchedule.Location = new Point(35, 147);
             btnSchedule.Margin = new Padding(35);
             btnSchedule.Name = "btnSchedule";
             btnSchedule.Size = new Size(330, 42);
             btnSchedule.TabIndex = 0;
             btnSchedule.Text = "Смены";
-            btnSchedule.UseVisualStyleBackColor = true;
+            btnSchedule.UseVisualStyleBackColor = false;
             // 
             // btnSections
             // 
+            btnSections.BackColor = Color.DodgerBlue;
             btnSections.Dock = DockStyle.Fill;
+            btnSections.FlatAppearance.BorderColor = Color.White;
+            btnSections.FlatAppearance.MouseDownBackColor = Color.CornflowerBlue;
+            btnSections.FlatAppearance.MouseOverBackColor = Color.CornflowerBlue;
+            btnSections.FlatStyle = FlatStyle.Flat;
+            btnSections.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 204);
+            btnSections.ForeColor = Color.White;
             btnSections.Location = new Point(435, 147);
             btnSections.Margin = new Padding(35);
             btnSections.Name = "btnSections";
             btnSections.Size = new Size(330, 42);
             btnSections.TabIndex = 1;
             btnSections.Text = "Участки";
-            btnSections.UseVisualStyleBackColor = true;
+            btnSections.UseVisualStyleBackColor = false;
             // 
             // btnDepartments
             // 
+            btnDepartments.BackColor = Color.DodgerBlue;
             btnDepartments.Dock = DockStyle.Fill;
+            btnDepartments.FlatAppearance.BorderColor = Color.White;
+            btnDepartments.FlatAppearance.MouseDownBackColor = Color.CornflowerBlue;
+            btnDepartments.FlatAppearance.MouseOverBackColor = Color.CornflowerBlue;
+            btnDepartments.FlatStyle = FlatStyle.Flat;
+            btnDepartments.Font = new Font("Segoe UI Semibold", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 204);
+            btnDepartments.ForeColor = Color.White;
             btnDepartments.Location = new Point(35, 259);
             btnDepartments.Margin = new Padding(35);
             btnDepartments.Name = "btnDepartments";
             btnDepartments.Size = new Size(330, 42);
             btnDepartments.TabIndex = 2;
             btnDepartments.Text = "Подразделения";
-            btnDepartments.UseVisualStyleBackColor = true;
+            btnDepartments.UseVisualStyleBackColor = false;
             // 
             // btnUsers
             // 
+            btnUsers.BackColor = Color.DodgerBlue;
             btnUsers.Dock = DockStyle.Fill;
+            btnUsers.FlatAppearance.BorderColor = Color.White;
+            btnUsers.FlatAppearance.MouseDownBackColor = Color.CornflowerBlue;
+            btnUsers.FlatAppearance.MouseOverBackColor = Color.CornflowerBlue;
+            btnUsers.FlatStyle = FlatStyle.Flat;
+            btnUsers.Font = new Font("Segoe UI Semibold", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 204);
+            btnUsers.ForeColor = Color.White;
             btnUsers.Location = new Point(435, 259);
             btnUsers.Margin = new Padding(35);
             btnUsers.Name = "btnUsers";
             btnUsers.Size = new Size(330, 42);
             btnUsers.TabIndex = 3;
             btnUsers.Text = "Пользователи";
-            btnUsers.UseVisualStyleBackColor = true;
+            btnUsers.UseVisualStyleBackColor = false;
             // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.GhostWhite;
             ClientSize = new Size(800, 450);
             Controls.Add(tableLayoutPanel1);
             Name = "MainForm";

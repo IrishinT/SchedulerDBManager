@@ -35,39 +35,55 @@
             // 
             // filePathField
             // 
-            filePathField.Location = new Point(152, 93);
+            filePathField.Font = new Font("Segoe UI", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 204);
+            filePathField.ForeColor = SystemColors.WindowText;
+            filePathField.Location = new Point(123, 91);
             filePathField.Name = "filePathField";
-            filePathField.Size = new Size(370, 27);
+            filePathField.PlaceholderText = "Введите путь к файлу с БД (.accdb) ...";
+            filePathField.Size = new Size(438, 30);
             filePathField.TabIndex = 0;
             // 
             // explorerOpenBtn
             // 
-            explorerOpenBtn.Location = new Point(528, 93);
+            explorerOpenBtn.BackColor = Color.DodgerBlue;
+            explorerOpenBtn.FlatAppearance.BorderColor = Color.Black;
+            explorerOpenBtn.FlatStyle = FlatStyle.Flat;
+            explorerOpenBtn.Font = new Font("Segoe UI", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 204);
+            explorerOpenBtn.ForeColor = Color.White;
+            explorerOpenBtn.Location = new Point(567, 91);
             explorerOpenBtn.Name = "explorerOpenBtn";
-            explorerOpenBtn.Size = new Size(94, 29);
+            explorerOpenBtn.Size = new Size(78, 30);
             explorerOpenBtn.TabIndex = 1;
-            explorerOpenBtn.Text = "...";
-            explorerOpenBtn.UseVisualStyleBackColor = true;
+            explorerOpenBtn.Text = "📁";
+            explorerOpenBtn.UseVisualStyleBackColor = false;
             // 
             // connectBtn
             // 
-            connectBtn.Location = new Point(275, 146);
+            connectBtn.BackColor = Color.DodgerBlue;
+            connectBtn.FlatAppearance.BorderColor = Color.White;
+            connectBtn.FlatAppearance.MouseDownBackColor = Color.CornflowerBlue;
+            connectBtn.FlatAppearance.MouseOverBackColor = Color.CornflowerBlue;
+            connectBtn.FlatStyle = FlatStyle.Flat;
+            connectBtn.Font = new Font("Segoe UI", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 204);
+            connectBtn.ForeColor = Color.White;
+            connectBtn.Location = new Point(280, 264);
             connectBtn.Name = "connectBtn";
-            connectBtn.Size = new Size(226, 29);
+            connectBtn.Size = new Size(226, 48);
             connectBtn.TabIndex = 2;
-            connectBtn.Text = "Подключение";
-            connectBtn.UseVisualStyleBackColor = true;
+            connectBtn.Text = "Подключиться";
+            connectBtn.UseVisualStyleBackColor = false;
             // 
             // LoadForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.GhostWhite;
             ClientSize = new Size(800, 450);
             Controls.Add(connectBtn);
             Controls.Add(explorerOpenBtn);
             Controls.Add(filePathField);
-            MaximizeBox = false;
             FormBorderStyle = FormBorderStyle.FixedDialog;
+            MaximizeBox = false;
             Name = "LoadForm";
             Text = "Подключение к БД";
             ResumeLayout(false);
