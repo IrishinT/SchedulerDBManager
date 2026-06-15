@@ -27,7 +27,10 @@ namespace SchedulerDBManager.DataAccess.Repositories.Access
 
         public IEnumerable<Section> SearchByAddress(string address)
         {
-            string sql = "SELECT * FROM sections WHERE address LIKE ?";
+            string sql = @"SELECT sec.*, dep.department_name 
+                   FROM sections sec 
+                   INNER JOIN department dep ON sec.department_id = dep.department_id 
+                   WHERE sec.address LIKE ?";
             var param = new OleDbParameter("@p1", OleDbType.LongVarWChar) { Value = $"%{address}%" };
             return MapToDomain(db.ExecuteSelect(sql, param));
         }

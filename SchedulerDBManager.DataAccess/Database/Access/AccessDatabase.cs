@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.OleDb;
-using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace SchedulerDBManager.DataAccess.Database.Access
 {
@@ -21,11 +22,30 @@ namespace SchedulerDBManager.DataAccess.Database.Access
 
         public void CheckConnection()
         {
-           using (var conn = GetConnection())
-           {
-              conn.Open();
-              conn.Close();
-           }
+            try
+            {
+                using (var conn = GetConnection())
+                {
+                    conn.Open();
+                    conn.Close();
+                }
+            }
+            catch (OleDbException ex)
+            {
+                throw new Exception("Ошибка: Драйвер Microsoft.ACE.OLEDB.12.0 НЕ установлен в системе.");
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw new Exception("Ошибка: Провайдер данных ACE.OLEDB.12.0 не зарегистрирован на этом компьютере.");
+            }
+            catch (BadImageFormatException)
+            {
+                throw new Exception("Ошибка: Конфликт разрядности! Приложение пытается загрузить драйвер не той архитектуры.");
+            }
+            catch (COMException ex)
+            {
+                throw new Exception($"Системная ошибка COM-компонента (0x{ex.ErrorCode:X}): {ex.Message}");
+            }
         }
 
         public DataTable ExecuteSelect(string query, params OleDbParameter[] parameters)

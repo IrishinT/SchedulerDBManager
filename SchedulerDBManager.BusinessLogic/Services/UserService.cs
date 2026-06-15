@@ -14,8 +14,15 @@ namespace SchedulerDBManager.BusinessLogic.Services
             _userRepo = userRepo;
         }
 
+        /// <summary>
+        /// Получает список всех пользователей системы.
+        /// </summary>
         public IEnumerable<User> GetAllUsers() => _userRepo.GetAll();
 
+        /// <summary>
+        /// Проводит валидацию пользователя, проверяет уникальность логина и добавляет его в систему.
+        /// </summary>
+        /// <param name="user">Объект нового пользователя.</param>
         public void CreateUser(User user)
         {
             Validate(user);
@@ -27,18 +34,31 @@ namespace SchedulerDBManager.BusinessLogic.Services
             _userRepo.Add(user);
         }
 
+        /// <summary>
+        /// Проверяет и обновляет данные существующей учетной записи.
+        /// </summary>
+        /// <param name="user">Объект пользователя с обновленными данными.</param>
         public void UpdateUser(User user)
         {
             Validate(user);
             _userRepo.Update(user);
         }
 
+        /// <summary>
+        /// Удаляет пользователя из системы по его идентификатору.
+        /// </summary>
+        /// <param name="id">Идентификатор пользователя.</param>
         public void RemoveUser(int id)
         {
             _userRepo.Delete(id);
         }
 
-        // Метод для будущей авторизации
+        /// <summary>
+        /// Выполняет авторизацию пользователя по введенным данным.
+        /// </summary>
+        /// <param name="login">Логин.</param>
+        /// <param name="password">Пароль.</param>
+        /// <returns>Возвращает объект пользователя, если авторизация успешна; иначе - null.</returns>
         public User Authenticate(string login, string password)
         {
             var user = _userRepo.GetByLogin(login);
@@ -49,6 +69,10 @@ namespace SchedulerDBManager.BusinessLogic.Services
             return null;
         }
 
+        /// <summary>
+        /// Внутренний метод для проверки данных учетной записи (наличие логина и пароля, корректность роли, минимальная длина пароля).
+        /// </summary>
+        /// <param name="user">Модель пользователя.</param>
         private void Validate(User user)
         {
             if (user == null) throw new ArgumentNullException(nameof(user));

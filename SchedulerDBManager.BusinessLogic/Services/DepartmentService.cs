@@ -20,20 +20,37 @@ namespace SchedulerDBManager.BusinessLogic.Services
             _scheduleRepo = scheduleRepo;
         }
 
+        /// <summary>
+        /// Возвращает список всех подразделений из базы данных.
+        /// </summary>
         public IEnumerable<Department> GetAllDepartments() => _deptRepo.GetAll();
 
+        /// <summary>
+        /// Выполняет валидацию и добавляет новое подразделение.
+        /// </summary>
+        /// <param name="department">Объект нового подразделения.</param>
         public void CreateDepartment(Department department)
         {
             Validate(department);
             _deptRepo.Add(department);
         }
 
+        /// <summary>
+        /// Выполняет валидацию и обновляет данные существующего подразделения.
+        /// </summary>
+        /// <param name="department">Объект подразделения с обновленными данными.</param>
         public void UpdateDepartment(Department department)
         {
             Validate(department);
             _deptRepo.Update(department);
         }
 
+        /// <summary>
+        /// Удаляет подразделение по идентификатору.
+        /// Выполняет каскадное удаление: сначала удаляются все смены, связанные с участками данного подразделения, 
+        /// затем сами участки, а потом уже подразделение.
+        /// </summary>
+        /// <param name="id">Идентификатор подразделения.</param>
         public void RemoveDepartment(int id)
         {
             // Каскадное удаление: Отдел - Участки - Смены
@@ -50,6 +67,10 @@ namespace SchedulerDBManager.BusinessLogic.Services
             _deptRepo.Delete(id);
         }
 
+        /// <summary>
+        /// Внутренний метод для проверки корректности данных подразделения перед сохранением.
+        /// </summary>
+        /// <param name="department">Модель подразделения.</param>
         private void Validate(Department department)
         {
             if (department == null) throw new ArgumentNullException(nameof(department));

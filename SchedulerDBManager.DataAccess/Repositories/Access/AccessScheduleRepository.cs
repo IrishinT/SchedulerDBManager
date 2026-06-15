@@ -27,8 +27,11 @@ namespace SchedulerDBManager.DataAccess.Repositories.Access
 
         public IEnumerable<Schedule> SearchBySupervisor(string name)
         {
-            string sql = "SELECT * FROM schedule WHERE supervisor_fullname LIKE ?";
-            var param = new OleDbParameter("@p1", $"%{name}%"); // Безопасный параметр
+            string sql = @"SELECT s.*, sec.address 
+                   FROM schedule s 
+                   INNER JOIN sections sec ON s.section_id = sec.section_id 
+                   WHERE s.supervisor_fullname LIKE ?";
+            var param = new OleDbParameter("@p1", $"%{name}%");
             var dataTable = db.ExecuteSelect(sql, param);
             return MapToDomain(dataTable);
         }
