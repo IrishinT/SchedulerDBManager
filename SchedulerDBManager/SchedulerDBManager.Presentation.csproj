@@ -9,6 +9,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="itext" Version="9.6.0" />
+    <PackageReference Include="itext.bouncy-castle-adapter" Version="9.6.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\SchedulerDBManager.BusinessLogic\SchedulerDBManager.BusinessLogic.csproj" />
     <ProjectReference Include="..\SchedulerDBManager.DataAccess\SchedulerDBManager.DataAccess.csproj" />
   </ItemGroup>

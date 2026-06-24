@@ -32,6 +32,7 @@
             dgvTable = new DataGridView();
             splitContainer = new SplitContainer();
             tableLayoutPanel = new TableLayoutPanel();
+            btnExportPDF = new Button();
             btnExport = new Button();
             btnHelp = new Button();
             btnDelete = new Button();
@@ -82,6 +83,7 @@
             // 
             tableLayoutPanel.ColumnCount = 1;
             tableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            tableLayoutPanel.Controls.Add(btnExportPDF, 0, 5);
             tableLayoutPanel.Controls.Add(btnExport, 0, 4);
             tableLayoutPanel.Controls.Add(btnHelp, 0, 3);
             tableLayoutPanel.Controls.Add(btnDelete, 0, 2);
@@ -90,14 +92,29 @@
             tableLayoutPanel.Dock = DockStyle.Fill;
             tableLayoutPanel.Location = new Point(0, 0);
             tableLayoutPanel.Name = "tableLayoutPanel";
-            tableLayoutPanel.RowCount = 5;
+            tableLayoutPanel.RowCount = 6;
             tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 20F));
             tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 20F));
             tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 20F));
             tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 20F));
-            tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 20F));
+            tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
+            tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
             tableLayoutPanel.Size = new Size(250, 450);
             tableLayoutPanel.TabIndex = 0;
+            // 
+            // btnExportPDF
+            // 
+            btnExportPDF.BackColor = Color.Snow;
+            btnExportPDF.Dock = DockStyle.Bottom;
+            btnExportPDF.FlatStyle = FlatStyle.Flat;
+            btnExportPDF.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 204);
+            btnExportPDF.Location = new Point(30, 416);
+            btnExportPDF.Margin = new Padding(30, 5, 30, 5);
+            btnExportPDF.Name = "btnExportPDF";
+            btnExportPDF.Size = new Size(190, 29);
+            btnExportPDF.TabIndex = 5;
+            btnExportPDF.Text = "Экспорт в PDF";
+            btnExportPDF.UseVisualStyleBackColor = false;
             // 
             // btnExport
             // 
@@ -105,8 +122,8 @@
             btnExport.Dock = DockStyle.Bottom;
             btnExport.FlatStyle = FlatStyle.Flat;
             btnExport.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 204);
-            btnExport.Location = new Point(30, 401);
-            btnExport.Margin = new Padding(30, 20, 30, 20);
+            btnExport.Location = new Point(30, 371);
+            btnExport.Margin = new Padding(30, 5, 30, 5);
             btnExport.Name = "btnExport";
             btnExport.Size = new Size(190, 29);
             btnExport.TabIndex = 4;
@@ -192,6 +209,7 @@
             // tlpSearch
             // 
             tlpSearch.BackColor = Color.GhostWhite;
+            tlpSearch.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 20F));
             tlpSearch.Dock = DockStyle.Fill;
             tlpSearch.Location = new Point(0, 0);
             tlpSearch.Name = "tlpSearch";
@@ -240,5 +258,6 @@
         protected Panel pnlSearch;
         protected TableLayoutPanel tlpSearch;
         protected Button btnExport;
+        protected Button btnExportPDF;
     }
 }

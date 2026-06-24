@@ -28,6 +28,25 @@ namespace SchedulerDBManager.Presentation
         private void registerHandlers()
         {
             btnExport.Click += BtnExport_Click;
+            btnExportPDF.Click += BtnExportPDF_Click;
+        }
+
+        /// <summary>
+        /// Обработчик клика по кнопке экспорта.
+        /// Автоматически выгружает текущие видимые данные из dgvTable.
+        /// </summary>
+        private void BtnExportPDF_Click(object? sender, EventArgs e)
+        {
+            // Очищаем заголовок формы от недопустимых для имени файла символов
+            string safeTitle = string.Concat(Text.Split(Path.GetInvalidFileNameChars()));
+
+            // Форматируем текущую дату и время
+            string timestamp = DateTime.Now.ToString("dd.MM.yyyy");
+
+            // Объединяем название и временную метку
+            string defaultFileName = $"Отчёт от {timestamp}.";
+
+            ExportHelper.ExportToPDF(dgvTable, defaultFileName);
         }
 
         /// <summary>
@@ -45,6 +64,7 @@ namespace SchedulerDBManager.Presentation
             // Объединяем название и временную метку
             string defaultFileName = $"{safeTitle}_{timestamp}.csv";
 
+            
             ExportHelper.ExportToCSV(dgvTable, defaultFileName);
         }
 
@@ -61,6 +81,8 @@ namespace SchedulerDBManager.Presentation
                 pnlSearch.Visible = false;
                 return;
             }
+
+            tlpSearch.ColumnStyles.Clear();
 
             // Задаем число колонок равным числу переданных полей
             tlpSearch.ColumnCount = fields.Length;
